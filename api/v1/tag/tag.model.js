@@ -7,6 +7,13 @@ let tagSchema = {
     type: String,
     trim: true,
     unique: true
+  },
+  create_at: {
+    type: Date,
+    default: Date.now
+  },
+  update_at: {
+    type: Date
   }
 }
 
