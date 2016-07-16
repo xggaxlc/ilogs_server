@@ -1,0 +1,39 @@
+{
+  "name": "ilogs_server",
+  "version": "0.0.0",
+  "description": "A blog api server",
+  "main": "app.js",
+  "scripts": {
+    "start": "set NODE_ENV=development&&nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xggaxlc/ilogs_server.git"
+  },
+  "keywords": [
+    "blog"
+  ],
+  "author": "duwei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xggaxlc/ilogs_server/issues"
+  },
+  "homepage": "https://github.com/xggaxlc/ilogs_server#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.7.1",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.6",
+    "lodash": "^4.13.1",
+    "mongoose": "^4.5.4",
+    "morgan": "^1.7.0",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "nodemon": "^1.9.1",
+    "should": "^8.3.1",
+    "supertest": "^1.2.0"
+  }
+}
