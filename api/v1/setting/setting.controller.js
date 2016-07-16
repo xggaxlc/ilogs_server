@@ -9,14 +9,14 @@
 'use strict';
 
 const Q = require('q');
-const Post = require('./post.model');
+const Setting = require('./setting.model');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
   return Q.all(
       [
-        Post.count().exec(),
-        Post.find().exec()
+        Setting.count().exec(),
+        Setting.find().exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))
@@ -24,20 +24,20 @@ exports.index = function(req, res) {
 }
 
 exports.show = function(req, res) {
-  return Post.findById(req.params.id).exec()
+  return Setting.findById(req.params.id).exec()
     .then(Respond.handleEntityNotFound(res))
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }
 
 exports.create = function(req, res) {
-  return Post.create(req.body)
+  return Setting.create(req.body)
     .then(Respond.respondWithResult(res, 201))
     .catch(Respond.handleError(res));
 }
 
 exports.update = function(req, res) {
-  return Post.findById(req.params.id).exec()
+  return Setting.findById(req.params.id).exec()
     .then(Respond.handleEntityNotFound(res))
     .then(Respond.saveUpdate(req.body))
     .then(Respond.respondWithResult(res))
@@ -45,7 +45,7 @@ exports.update = function(req, res) {
 }
 
 exports.destroy = function(req, res) {
-  return Post.findById(req.params.id).exec()
+  return Setting.findById(req.params.id).exec()
     .then(Respond.handleEntityNotFound(res))
     .then(Respond.removeEntity(res))
     .then(Respond.respondWithResult(res, 204))

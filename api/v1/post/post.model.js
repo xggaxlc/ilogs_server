@@ -1,18 +1,18 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const validator = require('validator');
+// const validator = require('validator');
 
 let PostSchema = new mongoose.Schema({
   title: {
     type: String,
     trim: true,
-    required: true
+    required: [true, '标题必填']
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: [true, '作者必填']
   },
   content: {
     type: String
@@ -31,10 +31,6 @@ let PostSchema = new mongoose.Schema({
   summary: {
     type: String
   },
-  comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
   hits: {
     type: Number,
     default: 0

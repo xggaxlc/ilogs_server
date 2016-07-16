@@ -1,12 +1,18 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 let RoleSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: true
+    unique: true,
+    required: [true, '用户组名必填']
+  },
+  changed: {
+    type: Boolean,
+    default: false
   },
   permissions: {
     category: {
@@ -21,10 +27,6 @@ let RoleSchema = new mongoose.Schema({
       post: {
         type: Boolean,
         default: false
-      },
-      get: {
-        type: Boolean,
-        default: true
       }
     },
     tag: {
@@ -39,10 +41,6 @@ let RoleSchema = new mongoose.Schema({
       post: {
         type: Boolean,
         default: false
-      },
-      get: {
-        type: Boolean,
-        default: true
       }
     },
     post: {
@@ -57,10 +55,6 @@ let RoleSchema = new mongoose.Schema({
       post: {
         type: Boolean,
         default: false
-      },
-      get: {
-        type: Boolean,
-        default: true
       }
     },
     user: {
@@ -75,10 +69,6 @@ let RoleSchema = new mongoose.Schema({
       post: {
         type: Boolean,
         default: false
-      },
-      get: {
-        type: Boolean,
-        default: true
       }
     },
     role: {
@@ -95,6 +85,20 @@ let RoleSchema = new mongoose.Schema({
         default: false
       },
       get: {
+        type: Boolean,
+        default: true
+      }
+    },
+    setting: {
+      delete: {
+        type: Boolean,
+        default: false
+      },
+      put: {
+        type: Boolean,
+        default: false
+      },
+      post: {
         type: Boolean,
         default: false
       }
@@ -113,5 +117,7 @@ let RoleSchema = new mongoose.Schema({
     default: true
   }
 });
+
+RoleSchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
 
 module.exports = mongoose.model('Role', RoleSchema);

@@ -1,11 +1,13 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-let tagSchema = {
+let TagSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
+    required: [true, '标签名必填'],
     unique: true
   },
   create_at: {
@@ -15,6 +17,8 @@ let tagSchema = {
   update_at: {
     type: Date
   }
-}
+});
 
-module.exports = mongoose.model('Tag', tagSchema);
+TagSchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
+
+module.exports = mongoose.model('Tag', TagSchema);
