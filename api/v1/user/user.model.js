@@ -30,8 +30,14 @@ let UserSchema = new mongoose.Schema({
     required: [true, '用户组必填'],
   },
   sex: Boolean,
-  tel: Number,
-  qq: Number,
+  tel: {
+    type: Number,
+    validate: validator.telValidator
+  },
+  qq: {
+    type: Number,
+    validate: validator.qqValidator
+  },
   avatar: {
     type: String,
     validate: validator.avatarValidator
@@ -44,6 +50,10 @@ let UserSchema = new mongoose.Schema({
   update_at: {
     type: Date,
     default: Date.now
+  },
+  update_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   last_login_at: {
     type: Date

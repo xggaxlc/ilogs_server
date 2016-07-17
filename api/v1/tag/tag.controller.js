@@ -10,13 +10,20 @@
 
 const Q = require('q');
 const Tag = require('./tag.model');
+const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
+  let queryFormated = Utils.formatQuery(req.query, [], ['name']);
   return Q.all(
       [
-        Tag.count().exec(),
-        Tag.find().exec()
+        Tag.count(queryFormated.query).exec(),
+        Tag.find(queryFormated.query)
+          .sort(queryFormated.sort)
+          .limit(queryFormated.limit)
+          .skip(queryFormated.skip)
+          .select(queryFormated.select)
+          .exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))

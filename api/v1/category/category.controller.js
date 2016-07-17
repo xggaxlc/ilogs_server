@@ -10,13 +10,20 @@
 
 const Q = require('q');
 const Category = require('./category.model');
+const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
+  let queryFormated = Utils.formatQuery(req.query, [], ['name']);
   return Q.all(
       [
-        Category.count().exec(),
-        Category.find().exec()
+        Category.count(queryFormated.query).exec(),
+        Category.find(queryFormated.query)
+          .sort(queryFormated.sort)
+          .limit(queryFormated.limit)
+          .skip(queryFormated.skip)
+          .select(queryFormated.select)
+          .exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))

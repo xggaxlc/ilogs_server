@@ -5,14 +5,15 @@ const validate = require('mongoose-validator');
 exports.nameValidator = [
   validate({
     validator: 'isLength',
-    arguments: [3, 10],
+    arguments: [2, 10],
     message: '姓名 必须是 {ARGS[0]} 到 {ARGS[1]} 个字符'
-  }),
-  validate({
-    validator: 'isAlphanumeric',
-    passIfEmpty: true,
-    message: '姓名 只支持数字和字母'
   })
+  // validate({
+  //   validator: 'matches',
+  //   arguments: ['^([\u4E00-\u9FA5]|\w)*$'],
+  //   passIfEmpty: true,
+  //   message: '姓名 不能包含特殊字符'
+  // })
 ];
 
 exports.emailValidator = [
@@ -27,9 +28,38 @@ exports.pwValidator = [
   validate({
     validator: 'isLength',
     arguments: [6, 16],
-    message: '密码 必须是 {ARGS[0]} 到 {ARGS[1]} 个字符'
+    passIfEmpty: true,
+    message: '密码 必须是 {ARGS[0]} - {ARGS[1]} 个字符'
   })
 ];
+
+exports.telValidator = [
+  validate({
+    validator: 'isNumeric',
+    passIfEmpty: true,
+    message: '电话 必须是数字'
+  }),
+  validate({
+    validator: 'isLength',
+    arguments: [11, 11],
+    passIfEmpty: true,
+    message: '电话 必须是 11位'
+  })
+]
+
+exports.qqValidator = [
+  validate({
+    validator: 'isNumeric',
+    passIfEmpty: true,
+    message: 'qq 必须是数字'
+  }),
+  validate({
+    validator: 'isLength',
+    arguments: [6, 12],
+    passIfEmpty: true,
+    message: 'qq 必须是 6-12位'
+  })
+]
 
 exports.avatarValidator = [
   validate({
