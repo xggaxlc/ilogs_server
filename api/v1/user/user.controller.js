@@ -20,12 +20,12 @@ exports.index = function(req, res) {
       [
         User.count(queryFormated.query).exec(),
         User.find(queryFormated.query)
-          .sort(queryFormated.sort)
-          .limit(queryFormated.limit)
-          .skip(queryFormated.skip)
-          .populate('role', '-permissions')
-          .select(queryFormated.select)
-          .exec()
+        .sort(queryFormated.sort)
+        .limit(queryFormated.limit)
+        .skip(queryFormated.skip)
+        .populate('role', '-permissions')
+        .select(queryFormated.select)
+        .exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))
@@ -56,7 +56,12 @@ exports.create = function(req, res) {
 
 exports.update = function(req, res) {
   // http://mongoosejs.com/docs/validation.html
-  return User.findOneAndUpdate({_id: req.params.id}, req.body, { runValidators: true, context: 'query' })
+  return User.findOneAndUpdate({
+      _id: req.params.id
+    }, req.body, {
+      runValidators: true,
+      context: 'query'
+    })
     .select('-password')
     .then(Respond.handleEntityNotFound(res))
     .then(entity => {

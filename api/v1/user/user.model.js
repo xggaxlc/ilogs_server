@@ -66,7 +66,9 @@ let UserSchema = new mongoose.Schema({
   retrieve_key: String
 });
 
-UserSchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
+UserSchema.plugin(uniqueValidator, {
+  message: '{VALUE} 已经被使用'
+});
 
 module.exports = mongoose.model('User', UserSchema);
 

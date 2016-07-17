@@ -19,6 +19,8 @@ let CategorySchema = new mongoose.Schema({
   }
 });
 
-CategorySchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
+CategorySchema.plugin(uniqueValidator, {
+  message: '{VALUE} 已经被使用'
+});
 
 module.exports = mongoose.model('Category', CategorySchema);

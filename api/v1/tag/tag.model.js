@@ -19,6 +19,8 @@ let TagSchema = new mongoose.Schema({
   }
 });
 
-TagSchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
+TagSchema.plugin(uniqueValidator, {
+  message: '{VALUE} 已经被使用'
+});
 
 module.exports = mongoose.model('Tag', TagSchema);

@@ -118,6 +118,8 @@ let RoleSchema = new mongoose.Schema({
   }
 });
 
-RoleSchema.plugin(uniqueValidator, { message: '{VALUE} 已经被使用' });
+RoleSchema.plugin(uniqueValidator, {
+  message: '{VALUE} 已经被使用'
+});
 
 module.exports = mongoose.model('Role', RoleSchema);

@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-module.exports = function (req, res, next, api) {
+module.exports = function(req, res, next, api) {
   let method = req.method.toLowerCase();
   let permissions = req.currentUser.permissions;
   api = api.toLowerCase();

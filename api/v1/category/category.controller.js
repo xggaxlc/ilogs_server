@@ -19,11 +19,11 @@ exports.index = function(req, res) {
       [
         Category.count(queryFormated.query).exec(),
         Category.find(queryFormated.query)
-          .sort(queryFormated.sort)
-          .limit(queryFormated.limit)
-          .skip(queryFormated.skip)
-          .select(queryFormated.select)
-          .exec()
+        .sort(queryFormated.sort)
+        .limit(queryFormated.limit)
+        .skip(queryFormated.skip)
+        .select(queryFormated.select)
+        .exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))
