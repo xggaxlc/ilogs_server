@@ -30,7 +30,8 @@
     "mongoose-unique-validator": "^1.0.2",
     "mongoose-validator": "^1.2.5",
     "morgan": "^1.7.0",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "validator": "^5.4.0"
   },
   "devDependencies": {
     "mocha": "^2.4.5",

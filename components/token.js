@@ -2,11 +2,10 @@
 
 const jwt = require('jsonwebtoken');
 const config = require('../config/environment');
-const User = require('./v1/user/user.model');
-const Role = require('./v1/role/role.model');
+const User = require('../api/v1/user/user.model');
+const Role = require('../api/v1/role/role.model');
 const Q = require('q');
 const SECRETKEY = config.secrets.jwt;
-
 
 function updateRoleChanged(user) {
   return Role.findById(user.role._id)
