@@ -8,6 +8,10 @@ exports.formatQuery = function(queryData, omitSelectArr = [], linkQueryArr = [])
 	let format = {};
 	format.sort = queryData.sort || '-_id';
 	format.limit = Number(queryData.limit) || 10;
+
+	//一次最多获取50条数据
+	format.limit = format.limit > 50 ? 50 : format.limit;
+
 	format.page = Number(queryData.page) || 1;
 	format.skip = (format.page - 1) * format.limit;
 	if (queryData.select) {

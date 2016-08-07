@@ -25,13 +25,6 @@ let PostSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   },
-  tags: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tag'
-    }],
-    validate: validator.TagsValidator
-  },
   summary: {
     type: String
   },
