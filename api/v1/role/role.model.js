@@ -29,20 +29,6 @@ let RoleSchema = new mongoose.Schema({
         default: false
       }
     },
-    tag: {
-      delete: {
-        type: Boolean,
-        default: false
-      },
-      put: {
-        type: Boolean,
-        default: false
-      },
-      post: {
-        type: Boolean,
-        default: false
-      }
-    },
     post: {
       delete: {
         type: Boolean,

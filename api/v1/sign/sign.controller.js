@@ -27,9 +27,9 @@ function createCondition() {
   return userInfo => {
     return Q.fcall(() => {
       let condition = validator.isEmail(userInfo.account_name) ? {
-        email: userInfo.account_name
+        email: validator.trim(userInfo.account_name.toLowerCase())
       } : {
-        name: userInfo.account_name
+        name: validator.trim(userInfo.account_name)
       };
       return [condition, userInfo];
     });
@@ -88,13 +88,13 @@ exports.signin = function(req, res) {
     .then(updateLastLogin())
     .then(createToken())
     .spread((token, entity) => {
-      res.status(200).json({
+      res.json({
         token: token,
         user: entity
       });
     })
     .catch(err => {
-      res.status(400).json(_.merge({
+      res.json(_.merge({
         success: 0
       }, err));
     });

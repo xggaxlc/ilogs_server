@@ -5,6 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const config = require('./config/environment');
 
 mongoose.Promise = require('q').Promise;
@@ -26,6 +27,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+
+//跨域支持
+app.use(cors());
 
 //在bodyParser中间件之后
 require('./router/v1')(app);
