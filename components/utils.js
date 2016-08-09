@@ -14,9 +14,12 @@ exports.formatQuery = function(queryData, omitSelectArr = [], linkQueryArr = [])
 
 	format.page = Number(queryData.page) || 1;
 	format.skip = (format.page - 1) * format.limit;
-	if (queryData.select) {
-		format.select = queryData.select.replace(new RegExp(`${omitSelectArr.join('|')}`, 'gi'), '');
-	}
+
+	format.select = queryData.select 
+		? queryData.select.replace(new RegExp(`${omitSelectArr.join('|')}`, 'gi'), '')
+		: omitSelectArr.map((item) => `-${item}`).join(' ');
+
+
 	format.query = _.omit(queryData, 'sort', 'limit', 'page', 'select');
 	linkQueryArr.forEach(field => {
 		if (format.query[field]) {
