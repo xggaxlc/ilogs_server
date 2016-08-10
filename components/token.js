@@ -34,11 +34,11 @@ exports.vertifyToken = function(req, res, next) {
     ignoreExpiration: false
   };
 
-  return jwt.vertify(token, SECRETKEY, options, (err, decoded) => {
+  return jwt.verify(token, SECRETKEY, options, (err, decoded) => {
     //token已经过期或无效
     if (err) return res.status(401).end();
     User.findById(decoded._id)
-      .pupolate('role')
+      .populate('role')
       .exec()
       .then(user => {
         //可能客户端的token正常,但是用户被删除了

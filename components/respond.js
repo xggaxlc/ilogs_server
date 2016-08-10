@@ -38,7 +38,18 @@ exports.handleEntityNotFound = function(res) {
 
 exports.handleError = function(res) {
   return err => {
-    let statusCode = err.statusCode || (err.name === 'ValidationError' ? 400 : 500);
-    res.status(statusCode).json(err);
+    if(err.name === 'ValidationError') {
+      var errorMsg = [];
+      for(let error in err.errors) {
+        errorMsg.push(err.errors[error].message);
+      }
+      res.json({
+        success: 0,
+        message: errorMsg.join(',')
+      });
+    } else {
+      res.status(500).json(err);
+    }
+
   }
 }
