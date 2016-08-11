@@ -1,3 +1,5 @@
+const Q = require('q');
+
 exports.respondWithResult = function(res, statusCode = 200) {
   return entity => {
     return entity ? res.status(statusCode).json({
@@ -32,7 +34,8 @@ exports.removeEntity = function() {
 
 exports.handleEntityNotFound = function(res) {
   return entity => {
-    return entity ? entity : res.status(404).end();
+    if (!entity) return Q.reject({ statusCode: 404, message: '没有找到这条数据！' });
+    return entity;
   }
 }
 
@@ -48,7 +51,7 @@ exports.handleError = function(res) {
         message: errorMsg.join(',')
       });
     } else {
-      res.status(500).json(err);
+      res.status(err.statusCode || 500).json(err);
     }
 
   }
