@@ -63,9 +63,10 @@ function checkPass() {
 
 function createToken() {
   return entity => {
-    return Q.fcall(() => {
-      return [Token.createToken(entity), entity];
-    });
+    return Token.createToken(entity)
+      .then(token => {
+        return [token, entity];
+      });
   }
 }
 

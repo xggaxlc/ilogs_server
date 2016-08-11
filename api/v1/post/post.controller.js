@@ -15,6 +15,12 @@ const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
+
+  //未登录只能获取未发布的文章
+  if (!req.currentUser) {
+    req.query.puhlished = true;
+  }
+
   let queryFormated = Utils.formatQuery(req.query, ['content'], ['title']);
   return Q.all(
       [
@@ -35,7 +41,16 @@ exports.index = function(req, res) {
 }
 
 exports.show = function(req, res) {
-  return Post.findById(req.params.id)
+  let condition = {
+    _id: req.params.id
+  }
+
+  //未登录只能获取未发布的文章
+  if (!req.currentUser) {
+    condition.puhlished = true;
+  }
+
+  return Post.findOne(condition)
     .populate('author', '-password')
     .populate('category')
     .populate('update_by')
