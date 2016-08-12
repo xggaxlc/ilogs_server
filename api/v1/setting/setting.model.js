@@ -12,5 +12,9 @@ let SettingSchema = new mongoose.Schema({
   }
 });
 
+SettingSchema.pre('save', function(next) {
+  this.update_at = Date.now();
+  next();
+});
 
 module.exports = mongoose.model('Setting', SettingSchema);

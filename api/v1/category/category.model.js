@@ -23,4 +23,9 @@ CategorySchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
+CategorySchema.pre('save', function(next) {
+  this.update_at = Date.now();
+  next();
+});
+
 module.exports = mongoose.model('Category', CategorySchema);

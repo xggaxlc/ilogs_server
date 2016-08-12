@@ -104,4 +104,9 @@ RoleSchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
+RoleSchema.pre('save', function(next) {
+  this.update_at = Date.now();
+  next();
+});
+
 module.exports = mongoose.model('Role', RoleSchema);

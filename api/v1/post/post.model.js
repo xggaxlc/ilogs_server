@@ -52,4 +52,9 @@ let PostSchema = new mongoose.Schema({
   }
 });
 
+PostSchema.pre('save', function(next) {
+  this.update_at = Date.now();
+  next();
+});
+
 module.exports = mongoose.model('Post', PostSchema);
