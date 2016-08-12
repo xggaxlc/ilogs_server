@@ -14,6 +14,18 @@ const User = require('./user.model');
 const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
+function checkPass(pass) {
+  var deferred = Q.defer();
+  //不一定会更新password字段
+  if (!pass) return Q.resolve();
+  if (pass.length >= 6 && pass.length <= 16) {
+    deferred.resolve(Utils.cryptoPass(pass));
+  } else {
+    deferred.reject({ statusCode: 200, message: '密码 必须是 6 - 16 个字符' });
+  }
+  return deferred.promise;
+}
+
 exports.index = function(req, res) {
   let queryFormated = Utils.formatQuery(req.query, ['password'], ['name']);
   return Q.all(
@@ -24,7 +36,6 @@ exports.index = function(req, res) {
         .limit(queryFormated.limit)
         .skip(queryFormated.skip)
         .populate('role', '-permissions')
-        .populate('update_by', '-password')
         .select(queryFormated.select)
         .exec()
       ]
@@ -36,7 +47,6 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
   return User.findById(req.params.id)
     .populate('role', '-permissions')
-    .populate('update_by', '-password')
     .select('-password')
     .exec()
     .then(Respond.handleEntityNotFound(res))
@@ -45,7 +55,13 @@ exports.show = function(req, res) {
 }
 
 exports.create = function(req, res) {
-  return User.create(req.body)
+  return checkPass(req.body.password)
+    .then(hashedPass => {
+      if (hashedPass) return req.body.password = hashedPass;
+    })
+    .then(() => {
+      return User.create(req.body);
+    })
     .then(entity => {
       return User.populate(entity, { path: 'role', select: '-permissions' });
     })
@@ -59,24 +75,23 @@ exports.create = function(req, res) {
 }
 
 exports.update = function(req, res) {
-
-  if(req.currentUser) {
-    req.body.update_by = req.currentUser._id;
-  }
-
-  // http://mongoosejs.com/docs/validation.html
-  return User.findOneAndUpdate({
-      _id: req.params.id
-    }, req.body, {
-      runValidators: true,
-      context: 'query',
-      new: true
+  return checkPass(req.body.password)
+    .then(hashedPass => {
+      if (hashedPass) return req.body.password = hashedPass;
     })
-    .populate('role', '-permissions')
-    .populate('update_by', '-password')
-    .select('-password')
-    .exec()
+    .then(() => {
+      return User.findById(req.params.id).exec()
+    })
     .then(Respond.handleEntityNotFound(res))
+    .then(Respond.saveUpdate(req.body))
+    .then(entity => {
+      return User.populate(entity, { path: 'role', select: '-permissions' })
+    })
+    .then(entity => {
+      let updatedUser = entity.toObject();
+      delete updatedUser.password;
+      return updatedUser;
+    })
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }

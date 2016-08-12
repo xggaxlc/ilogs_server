@@ -1,4 +1,5 @@
 const Q = require('q');
+const _ = require('lodash');
 
 exports.respondWithResult = function(res, statusCode = 200) {
   return entity => {
@@ -19,7 +20,6 @@ exports.respondWithCountAndResult = function(res, statusCode = 200) {
 
 exports.saveUpdate = function(updates) {
   delete updates._id;
-  updates.update_at = new Date();
   return entity => {
     entity.set(updates);
     return entity.save();
@@ -51,7 +51,12 @@ exports.handleError = function(res) {
         message: errorMsg.join(',')
       });
     } else {
-      res.status(err.statusCode || 500).json(err);
+      if (err.statusCode) {
+        let error = _.omit(_.merge({ success: 0 }, err), 'statusCode');
+        res.status(err.statusCode).json(error);
+      } else {
+        res.status(500).json(err);
+      }
     }
 
   }

@@ -24,15 +24,6 @@ exports.emailValidator = [
   })
 ];
 
-exports.pwValidator = [
-  validate({
-    validator: 'isLength',
-    arguments: [6, 16],
-    passIfEmpty: true,
-    message: '密码 必须是 {ARGS[0]} - {ARGS[1]} 个字符'
-  })
-];
-
 exports.telValidator = [
   validate({
     validator: 'isNumeric',

@@ -21,8 +21,7 @@ let UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, '密码必填'],
-    validate: validator.pwValidator
+    required: [true, '密码必填']
   },
   role: {
     type: mongoose.Schema.Types.ObjectId,
@@ -51,10 +50,6 @@ let UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  update_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
   last_login_at: {
     type: Date
   },
@@ -66,10 +61,14 @@ let UserSchema = new mongoose.Schema({
   retrieve_key: String
 });
 
+
 UserSchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
-module.exports = mongoose.model('User', UserSchema);
+UserSchema.pre('save', function(next) {
+  this.update_at = Date.now();
+  next();
+});
 
-require('./user.middleware');
+module.exports = mongoose.model('User', UserSchema);
