@@ -14,6 +14,10 @@ let RoleSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  active: {
+    type: Boolean,
+    default: true
+  },
   permissions: {
     category: {
       delete: {
@@ -69,10 +73,6 @@ let RoleSchema = new mongoose.Schema({
       post: {
         type: Boolean,
         default: false
-      },
-      get: {
-        type: Boolean,
-        default: true
       }
     },
     setting: {
@@ -97,10 +97,6 @@ let RoleSchema = new mongoose.Schema({
   update_at: {
     type: Date,
     default: Date.now
-  },
-  active: {
-    type: Boolean,
-    default: true
   }
 });
 

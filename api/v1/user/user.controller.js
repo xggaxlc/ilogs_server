@@ -24,6 +24,7 @@ exports.index = function(req, res) {
         .limit(queryFormated.limit)
         .skip(queryFormated.skip)
         .populate('role', '-permissions')
+        .populate('update_by', '-password')
         .select(queryFormated.select)
         .exec()
       ]
@@ -34,7 +35,7 @@ exports.index = function(req, res) {
 
 exports.show = function(req, res) {
   return User.findById(req.params.id)
-    .populate('role')
+    .populate('role', '-permissions')
     .populate('update_by', '-password')
     .select('-password')
     .exec()
@@ -46,27 +47,36 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   return User.create(req.body)
     .then(entity => {
-      let user = JSON.parse(JSON.stringify(entity));
-      delete user.password;
-      return user;
+      return User.populate(entity, { path: 'role', select: '-permissions' });
+    })
+    .then(entity => {
+      let newUser = entity.toObject();
+      delete newUser.password;
+      return newUser;
     })
     .then(Respond.respondWithResult(res, 201))
     .catch(Respond.handleError(res));
 }
 
 exports.update = function(req, res) {
+
+  if(req.currentUser) {
+    req.body.update_by = req.currentUser._id;
+  }
+
   // http://mongoosejs.com/docs/validation.html
   return User.findOneAndUpdate({
       _id: req.params.id
     }, req.body, {
       runValidators: true,
-      context: 'query'
+      context: 'query',
+      new: true
     })
+    .populate('role', '-permissions')
+    .populate('update_by', '-password')
     .select('-password')
+    .exec()
     .then(Respond.handleEntityNotFound(res))
-    .then(entity => {
-      return _.merge(entity, req.body);
-    })
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }
