@@ -7,6 +7,7 @@ module.exports = function(app) {
   let postController = require('../api/v1/post');
   let settingController = require('../api/v1/setting');
   let signController = require('../api/v1/sign');
+  let mailController = require('../api/v1/mail');
 
   app.use('/api/v1/sign', signController);
   app.use('/api/v1/category', categoryController);
@@ -14,6 +15,7 @@ module.exports = function(app) {
   app.use('/api/v1/user', userController);
   app.use('/api/v1/post', postController);
   app.use('/api/v1/setting', settingController);
+  app.use('/api/v1/mail', mailController);
 
   app.route('/:url(api|config|components|)/*')
     .all((req, res) => {
