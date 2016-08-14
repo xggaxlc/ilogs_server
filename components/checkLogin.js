@@ -18,29 +18,6 @@ function findUser() {
 	}
 }
 
-function updateRoleChanged(user) {
-  return Role.findById(user.role._id)
-    .exec()
-    .then(entity => {
-      entity.set({
-        changed: false
-      });
-      return entity.save();
-    });
-}
-
-function checkRoleChange() {
-	return user => {
-		if (user.role.changed) {
-			return updateRoleChanged(user)
-				.then(() => {
-					Q.reject({ statusCode: 401, message: '用户组权限有变更，需要重新登陆！' });
-				});
-		}
-		return user;
-	}
-}
-
 function checkLogin(req, res, next, mustLogin) {
 	let token = req.headers.token || req.body.token || req.params.token || req.query.token;
 	if (!token) {
@@ -48,7 +25,6 @@ function checkLogin(req, res, next, mustLogin) {
 	} else {
 		vertifyToken(token)
 			.then(findUser())
-			.then(checkRoleChange())
 			.then(user => {
 				req.currentUser = user;
 				next();

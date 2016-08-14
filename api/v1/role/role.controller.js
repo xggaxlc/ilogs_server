@@ -9,6 +9,7 @@
 'use strict';
 
 const Q = require('q');
+const _ = require('lodash');
 const Role = require('./role.model');
 const Respond = require('../../../components/respond');
 
@@ -24,7 +25,16 @@ exports.index = function(req, res) {
 }
 
 exports.show = function(req, res) {
-  return Role.findById(req.params.id).exec()
+  let id = req.params.id;
+
+  if (id === 'template') {
+    Q.fcall(() => {
+      return _.pick(new Role(), ['permissions', 'active']);
+    })
+    .then(Respond.respondWithResult(res));
+  }
+
+  return Role.findById(id).exec()
     .then(Respond.handleEntityNotFound(res))
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));

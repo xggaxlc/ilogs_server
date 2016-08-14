@@ -8,11 +8,7 @@ let RoleSchema = new mongoose.Schema({
     type: String,
     trim: true,
     unique: true,
-    required: [true, '用户组名必填']
-  },
-  changed: {
-    type: Boolean,
-    default: false
+    required: [true, '角色名必填']
   },
   active: {
     type: Boolean,
