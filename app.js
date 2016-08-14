@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/environment');
+const path = require('path');
 
 mongoose.Promise = require('q').Promise;
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -27,6 +28,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+//图片静态服务
+app.use('/' + config.upload.folderName, express.static(path.join(__dirname, config.upload.folderName)));
 app.use(morgan('dev'));
 
 //跨域支持
