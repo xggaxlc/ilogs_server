@@ -14,13 +14,24 @@ const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 function checkPass(pass) {
-  var deferred = Q.defer();
+  let deferred = Q.defer();
   //不一定会更新password字段
   if (!pass) return Q.resolve();
   if (pass.length >= 6 && pass.length <= 16) {
     deferred.resolve(Utils.cryptoPass(pass));
   } else {
     deferred.reject({ statusCode: 200, message: '密码 必须是 6 - 16 个字符' });
+  }
+  return deferred.promise;
+}
+
+// 非master用户无法修改master用户
+function checkMaster(updateUser, currentUser) {
+  let deferred = Q.defer();
+  if (updateUser.master && !currentUser.master) {
+    deferred.reject({ statusCode: 200, message: '你无法修改MASTER用户' });
+  } else {
+    deferred.resolve(updateUser);
   }
   return deferred.promise;
 }
@@ -54,6 +65,9 @@ exports.show = function(req, res) {
 }
 
 exports.create = function(req, res) {
+  // master字段不能添加和修改
+  delete req.body.master;
+
   return checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) return req.body.password = hashedPass;
@@ -74,12 +88,23 @@ exports.create = function(req, res) {
 }
 
 exports.update = function(req, res) {
+  // master字段不能添加和修改
+  delete req.body.master;
+
+  //非master不能修改用户角色(间接拿到权限)
+  if (!req.currentUser.master) {
+    delete req.body.role;
+  }
+
   return checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) return req.body.password = hashedPass;
     })
     .then(() => {
-      return User.findById(req.params.id).exec()
+      return User.findById(req.params.id).exec();
+    })
+    .then(entity => {
+      return checkMaster(entity, req.currentUser);
     })
     .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
@@ -97,6 +122,9 @@ exports.update = function(req, res) {
 
 exports.destroy = function(req, res) {
   return User.findById(req.params.id).exec()
+    .then(entity => {
+      return checkMaster(entity, req.currentUser);
+    })
     .then(Respond.handleEntityNotFound())
     .then(Respond.removeEntity())
     .then(Respond.respondWithResult(res, 204))

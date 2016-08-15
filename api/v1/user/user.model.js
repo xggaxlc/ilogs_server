@@ -5,6 +5,10 @@ const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('./user.validator');
 
 let UserSchema = new mongoose.Schema({
+  master: {
+    type: Boolean,
+    default: false
+  },
   name: {
     type: String,
     trim: true,
@@ -61,14 +65,19 @@ let UserSchema = new mongoose.Schema({
   retrieve_key: String
 });
 
-
 UserSchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
-  next();
+  mongoose.model('User', UserSchema).count().exec()
+    .then(count => {
+      if (!count) {
+        this.master = true;
+      }
+      next();
+    });
 });
 
 module.exports = mongoose.model('User', UserSchema);

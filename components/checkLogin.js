@@ -19,7 +19,7 @@ function findUser() {
 }
 
 function checkLogin(req, res, next, mustLogin) {
-	let token = req.headers.token  || req.query.token || req.body.token || req.params.token;
+	let token = req.headers.token || req.query.token || req.body.token || req.params.token;
 	if (!token) {
 		mustLogin ? res.status(401).json({ success: 0, message: '请登录!' }) : next();
 	} else {

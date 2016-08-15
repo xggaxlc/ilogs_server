@@ -5,7 +5,6 @@ const config = require('../../../config/environment');
 const Q = require('q');
 const _ = require('lodash');
 
-
 function uploadSingleFile(req, res, fieldName) {
   let opts = {
     folderName: fieldName
@@ -32,7 +31,6 @@ function uploadSingleFile(req, res, fieldName) {
     });
   });
   return deferred.promise;
-
 }
 
 exports.uploadImage = function(req, res) {

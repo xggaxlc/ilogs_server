@@ -7,12 +7,16 @@ const Ctrl = require('./setting.controller');
 // 检查登陆
 const CheckLogin = require('../../../components/checkLogin');
 const mustLogin = CheckLogin.mustLogin;
-const canLogin = CheckLogin.canLogin;
+router.use(mustLogin);
 
-router.get('/', canLogin, Ctrl.index);
-router.get('/:id', canLogin, Ctrl.show);
-router.post('/', mustLogin, Ctrl.create);
-router.put('/:id', mustLogin, Ctrl.update);
-router.delete('/:id', mustLogin, Ctrl.destroy);
+//检查权限
+const checkPermission = require('../../../components/checkPermission');
+router.use(checkPermission);
+
+router.get('/', Ctrl.index);
+router.get('/:id', Ctrl.show);
+router.post('/', Ctrl.create);
+router.put('/:id', Ctrl.update);
+router.delete('/:id', Ctrl.destroy);
 
 module.exports = router;
