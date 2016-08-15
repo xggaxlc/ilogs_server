@@ -25,7 +25,7 @@ exports.index = function(req, res) {
 
 exports.show = function(req, res) {
   return Setting.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }
@@ -38,7 +38,7 @@ exports.create = function(req, res) {
 
 exports.update = function(req, res) {
   return Setting.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
@@ -46,8 +46,8 @@ exports.update = function(req, res) {
 
 exports.destroy = function(req, res) {
   return Setting.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
-    .then(Respond.removeEntity(res))
+    .then(Respond.handleEntityNotFound())
+    .then(Respond.removeEntity())
     .then(Respond.respondWithResult(res, 204))
     .catch(Respond.handleError(res));
 }

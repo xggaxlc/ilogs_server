@@ -37,6 +37,7 @@
     "validator": "^5.4.0"
   },
   "devDependencies": {
+    "eslint": "^3.3.0",
     "mocha": "^2.4.5",
     "nodemon": "^1.9.1",
     "should": "^8.3.1",

@@ -32,7 +32,7 @@ exports.removeEntity = function() {
   }
 }
 
-exports.handleEntityNotFound = function(res) {
+exports.handleEntityNotFound = function() {
   return entity => {
     if (!entity) return Q.reject({ statusCode: 404, message: '没有找到这条数据！' });
     return entity;

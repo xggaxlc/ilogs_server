@@ -9,7 +9,6 @@
 'use strict';
 
 const Q = require('q');
-const _ = require('lodash');
 const Post = require('./post.model');
 const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
@@ -55,7 +54,7 @@ exports.show = function(req, res) {
     .populate('category')
     .populate('update_by')
     .exec()
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }
@@ -71,7 +70,7 @@ exports.update = function(req, res) {
     req.body.update_by = req.currentUser._id;
   }
   return Post.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
@@ -79,8 +78,8 @@ exports.update = function(req, res) {
 
 exports.destroy = function(req, res) {
   return Post.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
-    .then(Respond.removeEntity(res))
+    .then(Respond.handleEntityNotFound())
+    .then(Respond.removeEntity())
     .then(Respond.respondWithResult(res, 204))
     .catch(Respond.handleError(res));
 }

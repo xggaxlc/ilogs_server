@@ -2,6 +2,8 @@
  * POST    /             ->  create
  */
 
+'use strict';
+
 const Mail = require('../../../components/mail');
 
 exports.create = function(req, res) {

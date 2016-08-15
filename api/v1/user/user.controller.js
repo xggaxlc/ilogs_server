@@ -8,7 +8,6 @@
 
 'use strict';
 
-const _ = require('lodash');
 const Q = require('q');
 const User = require('./user.model');
 const Utils = require('../../../components/utils');
@@ -49,7 +48,7 @@ exports.show = function(req, res) {
     .populate('role', '-permissions')
     .select('-password')
     .exec()
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
 }
@@ -82,7 +81,7 @@ exports.update = function(req, res) {
     .then(() => {
       return User.findById(req.params.id).exec()
     })
-    .then(Respond.handleEntityNotFound(res))
+    .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
     .then(entity => {
       return User.populate(entity, { path: 'role', select: '-permissions' })
@@ -98,8 +97,8 @@ exports.update = function(req, res) {
 
 exports.destroy = function(req, res) {
   return User.findById(req.params.id).exec()
-    .then(Respond.handleEntityNotFound(res))
-    .then(Respond.removeEntity(res))
+    .then(Respond.handleEntityNotFound())
+    .then(Respond.removeEntity())
     .then(Respond.respondWithResult(res, 204))
     .catch(Respond.handleError(res));
 }

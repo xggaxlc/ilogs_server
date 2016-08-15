@@ -2,7 +2,6 @@
 
 const vertifyToken = require('./token').vertifyToken;
 const User = require('../api/v1/user/user.model');
-const Role = require('../api/v1/role/role.model');
 const Q = require('q');
 const _ = require('lodash');
 
