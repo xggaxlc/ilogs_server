@@ -23,9 +23,6 @@ if (config.seedDB) {
 let app = express();
 let server = http.createServer(app);
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 //图片静态服务

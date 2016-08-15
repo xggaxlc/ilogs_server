@@ -5,44 +5,57 @@ const config = require('../../../config/environment');
 const Q = require('q');
 const _ = require('lodash');
 
-exports.avatar = function(req, res) {
-  let opts = {
-    folderName: 'avatar'
-  }
 
-  let uploader = upload.createUpload(opts).single('avatar');
+function uploadSingleFile(req, res, fieldName) {
+  let opts = {
+    folderName: fieldName
+  }
+  let uploader = upload.uploadImage(opts).single(opts.folderName);
+  let deferred = Q.defer();
 
   uploader(req, res, err => {
-    if (err) 
-    return err.code ? res.json({
-      success: 0,
-      message: upload.createLimitError(err.code)
-    }) : res.json({
-      success: 0,
-      message: err
-    });
+    if (err)
+      return err.code ? deferred.reject({
+        message: upload.createLimitError(err.code)
+      }) : deferred.reject({
+        message: err
+      });
 
-    if (!req.file) return res.json({
-      success: 0,
-      message: '上传的图片不能为空！'
-    });
+    if (!req.file)
+      return deferred.reject({
+        message: '上传的图片不能为空！'
+      });
 
-    res.json({
-      succss: 1,
+    deferred.resolve({
       url: `${config.host}/${config.upload.folderName}/${opts.folderName}/${req.file.filename}`,
       message: '上传成功！'
     });
-
   });
+  return deferred.promise;
+
 }
 
-exports.deteteAvatar = function(req, res) {
-  let filename = req.params.filename;
-  upload.deleteFile('avatar', filename)
+exports.uploadImage = function(req, res) {
+  uploadSingleFile(req, res, 'image')
+    .then(successInfo => {
+      res.json(_.merge({
+        success: 1
+      }, successInfo));
+    })
+    .catch(errorInfo => {
+      res.json(_.merge({
+        success: 0
+      }, errorInfo));
+    });
+}
+
+
+exports.destroy = function(req, res) {
+  upload.deleteFile(req.params.filename)
     .then(() => {
       res.json({
         success: 1,
-        message: '删除图片成功!'
+        message: '删除文件成功!'
       })
     })
     .catch(err => {

@@ -4,6 +4,7 @@ const vertifyToken = require('./token').vertifyToken;
 const User = require('../api/v1/user/user.model');
 const Role = require('../api/v1/role/role.model');
 const Q = require('q');
+const _ = require('lodash');
 
 function findUser() {
 	return user_id => {
@@ -19,9 +20,9 @@ function findUser() {
 }
 
 function checkLogin(req, res, next, mustLogin) {
-	let token = req.headers.token || req.body.token || req.params.token || req.query.token;
+	let token = req.headers.token  || req.query.token || req.body.token || req.params.token;
 	if (!token) {
-		mustLogin ? res.status(401).json({ message: '请登录!' }) : next();
+		mustLogin ? res.status(401).json({ success: 0, message: '请登录!' }) : next();
 	} else {
 		vertifyToken(token)
 			.then(findUser())
@@ -30,7 +31,8 @@ function checkLogin(req, res, next, mustLogin) {
 				next();
 			})
 			.catch(err => {
-				err.statusCode ? res.status(err.statusCode).json(err) : res.status(500).json(err);
+				let error = _.merge(err, { success: 0 });
+				err.statusCode ? res.status(err.statusCode).json(error) : res.status(500).json(error);
 			});
 	}
 }
