@@ -1,5 +1,6 @@
 /**
- * POST    /             ->  signin
+ * POST    /signin             ->  signin
+ * POST    /signup             ->  signup
  */
 
 'use strict';
@@ -76,9 +77,53 @@ function updateLastLogin() {
         _id: entity._id
       }, {
         last_login_at: new Date()
+      }, {
+        new: true
       })
       .populate('role');
   }
+}
+
+function createMasterUser(userInfo) {
+  userInfo.master = true;
+  return Q.fcall(() => {
+      if (!userInfo.name || !userInfo.password) {
+        return Q.reject({
+          message: '用户名和密码必填!'
+        });
+      }
+    })
+    .then(() => {
+      return Utils.checkPass(userInfo.password);
+    })
+    .then(hashedPass => {
+      if (hashedPass) {
+        userInfo.password = hashedPass;
+      };
+      return userInfo;
+    })
+    .then(userInfo => {
+      let masterUser = new User(userInfo);
+      //不执行validate验证
+      return masterUser.save({
+        validateBeforeSave: false
+      });
+    });
+}
+
+function createCommonUser(userInfo) {
+  // delete userInfo.master;
+  // return Utils.checkPass(userInfo.password)
+  //   .then(hashedPass => {
+  //     if (hashedPass) return userInfo.password = hashedPass;
+  //   })
+  //   .then(userInfo => {
+  //     let newUser = new User(userInfo);
+  //     return newUser.save();
+  //   });
+  return Q.reject({
+    message: '暂不支持注册！'
+  });
 }
 
 exports.signin = function(req, res) {
@@ -90,6 +135,29 @@ exports.signin = function(req, res) {
     .then(createToken())
     .spread((token, entity) => {
       res.json({
+        success: 1,
+        token: token,
+        user: entity
+      });
+    })
+    .catch(err => {
+      res.json(_.merge({
+        success: 0
+      }, err));
+    });
+}
+
+exports.signup = function(req, res) {
+  User.count().exec()
+    .then(count => {
+      return count ? createCommonUser(req.body) : createMasterUser(req.body);
+    })
+    // 注册成功自动登录
+    .then(updateLastLogin())
+    .then(createToken())
+    .spread((token, entity) => {
+      res.json({
+        success: 1,
         token: token,
         user: entity
       });

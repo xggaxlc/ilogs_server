@@ -13,23 +13,14 @@ const User = require('./user.model');
 const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
-function checkPass(pass) {
-  let deferred = Q.defer();
-  //不一定会更新password字段
-  if (!pass) return Q.resolve();
-  if (pass.length >= 6 && pass.length <= 16) {
-    deferred.resolve(Utils.cryptoPass(pass));
-  } else {
-    deferred.reject({ statusCode: 200, message: '密码 必须是 6 - 16 个字符' });
-  }
-  return deferred.promise;
-}
-
 // 非master用户无法修改master用户
 function checkMaster(updateUser, currentUser) {
   let deferred = Q.defer();
   if (updateUser.master && !currentUser.master) {
-    deferred.reject({ statusCode: 200, message: '你无法修改MASTER用户' });
+    deferred.reject({
+      statusCode: 200,
+      message: '你无法修改MASTER用户'
+    });
   } else {
     deferred.resolve(updateUser);
   }
@@ -65,23 +56,22 @@ exports.show = function(req, res) {
 }
 
 exports.create = function(req, res) {
-
-  return User.count().exec()
-    .then(count => {
-      //第一个用户是管理员用户
-      req.body.master = count ? true : false;
-    })
-    .then(() => {
-      return checkPass(req.body.password)
-    })
+  delete req.body.master;
+  return Utils.checkPass(req.body.password)
     .then(hashedPass => {
-      if (hashedPass) return req.body.password = hashedPass;
+      if (hashedPass) {
+        req.body.password = hashedPass;
+      }
+      return req.body;
     })
     .then(() => {
       return User.create(req.body);
     })
     .then(entity => {
-      return User.populate(entity, { path: 'role', select: '-permissions' });
+      return User.populate(entity, {
+        path: 'role',
+        select: '-permissions'
+      });
     })
     .then(entity => {
       let newUser = entity.toObject();
@@ -96,14 +86,17 @@ exports.update = function(req, res) {
   // master字段不能修改
   delete req.body.master;
 
-  //非master不能修改用户角色(间接拿到权限)
-  if (!req.currentUser.master) {
+  //非master不能修改用户角色(间接拿到权限) master用户不能给自己加角色(无意义)
+  if (!req.currentUser.master || (req.currentUser._id.toString() === req.body._id.toString())) {
     delete req.body.role;
   }
 
   return checkPass(req.body.password)
     .then(hashedPass => {
-      if (hashedPass) return req.body.password = hashedPass;
+      if (hashedPass) {
+        req.body.password = hashedPass;
+      }
+      return req.body;
     })
     .then(() => {
       return User.findById(req.params.id).exec();
@@ -114,7 +107,10 @@ exports.update = function(req, res) {
     .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
     .then(entity => {
-      return User.populate(entity, { path: 'role', select: '-permissions' })
+      return User.populate(entity, {
+        path: 'role',
+        select: '-permissions'
+      })
     })
     .then(entity => {
       let updatedUser = entity.toObject();

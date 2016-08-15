@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const Q = require('q');
 const crypto = require('crypto');
 const config = require('../config/environment');
 
@@ -29,6 +30,21 @@ exports.formatQuery = function(queryData, omitSelectArr = [], linkQueryArr = [])
 		}
 	});
 	return format;
+}
+
+exports.checkPass = function(pass) {
+  let deferred = Q.defer();
+  //不一定会更新password字段
+  if (!pass) deferred.resolve();
+  if (pass.length >= 6 && pass.length <= 16) {
+    deferred.resolve(exports.cryptoPass(pass));
+  } else {
+    deferred.reject({
+      statusCode: 200,
+      message: '密码 必须是 6 - 16 个字符'
+    });
+  }
+  return deferred.promise;
 }
 
 exports.cryptoPass = function(pass) {
