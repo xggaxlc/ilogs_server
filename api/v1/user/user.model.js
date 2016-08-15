@@ -71,13 +71,7 @@ UserSchema.plugin(uniqueValidator, {
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
-  mongoose.model('User', UserSchema).count().exec()
-    .then(count => {
-      if (!count) {
-        this.master = true;
-      }
-      next();
-    });
+  next();
 });
 
 module.exports = mongoose.model('User', UserSchema);

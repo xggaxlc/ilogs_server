@@ -65,10 +65,15 @@ exports.show = function(req, res) {
 }
 
 exports.create = function(req, res) {
-  // master字段不能添加和修改
-  delete req.body.master;
 
-  return checkPass(req.body.password)
+  return User.count().exec()
+    .then(count => {
+      //第一个用户是管理员用户
+      req.body.master = count ? true : false;
+    })
+    .then(() => {
+      return checkPass(req.body.password)
+    })
     .then(hashedPass => {
       if (hashedPass) return req.body.password = hashedPass;
     })
@@ -88,7 +93,7 @@ exports.create = function(req, res) {
 }
 
 exports.update = function(req, res) {
-  // master字段不能添加和修改
+  // master字段不能修改
   delete req.body.master;
 
   //非master不能修改用户角色(间接拿到权限)
