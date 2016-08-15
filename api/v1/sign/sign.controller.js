@@ -122,10 +122,12 @@ exports.signin = function(req, res) {
     .then(updateLastLogin())
     .then(createToken())
     .spread((token, entity) => {
+      let user = entity.toObject();
+      delete user.password;
       res.json({
         success: 1,
         token: token,
-        user: entity
+        user: user
       });
     })
     .catch(err => {
@@ -144,10 +146,12 @@ exports.signup = function(req, res) {
     .then(updateLastLogin())
     .then(createToken())
     .spread((token, entity) => {
+      let user = entity.toObject();
+      delete user.password;
       res.json({
         success: 1,
         token: token,
-        user: entity
+        user: user
       });
     })
     .catch(err => {
