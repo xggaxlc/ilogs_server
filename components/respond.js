@@ -20,6 +20,7 @@ exports.respondWithCountAndResult = function(res, statusCode = 200) {
 
 exports.saveUpdate = function(updates) {
   delete updates._id;
+  delete updates._v;
   return entity => {
     entity.set(updates);
     return entity.save();
