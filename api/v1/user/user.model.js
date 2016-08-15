@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('./user.validator');
+const ValidateError = require('../../../components/utils.js').ValidateError;
 
 let UserSchema = new mongoose.Schema({
   master: {
@@ -29,8 +30,7 @@ let UserSchema = new mongoose.Schema({
   },
   role: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Role',
-    required: [true, '用户组必填'],
+    ref: 'Role'
   },
   sex: Boolean,
   tel: {
@@ -71,6 +71,10 @@ UserSchema.plugin(uniqueValidator, {
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
+  // master没有角色
+  if (!this.role && !this.master) {
+    next(new ValidateError('角色必填'));
+  }
   next();
 });
 

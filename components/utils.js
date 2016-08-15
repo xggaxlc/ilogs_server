@@ -16,9 +16,9 @@ exports.formatQuery = function(queryData, omitSelectArr = [], linkQueryArr = [])
 	format.page = Number(queryData.page) || 1;
 	format.skip = (format.page - 1) * format.limit;
 
-	format.select = queryData.select 
-		? queryData.select.replace(new RegExp(`${omitSelectArr.join('|')}`, 'gi'), '')
-		: omitSelectArr.map((item) => `-${item}`).join(' ');
+	format.select = queryData.select ?
+		queryData.select.replace(new RegExp(`${omitSelectArr.join('|')}`, 'gi'), '') :
+		omitSelectArr.map((item) => `-${item}`).join(' ');
 
 
 	format.query = _.omit(queryData, 'sort', 'limit', 'page', 'select');
@@ -32,19 +32,30 @@ exports.formatQuery = function(queryData, omitSelectArr = [], linkQueryArr = [])
 	return format;
 }
 
+exports.ValidateError = class ValidateError extends Error {
+	constructor(msg) {
+		super();
+		this.type = 'validateError';
+		this.message = msg;
+	}
+}
+
 exports.checkPass = function(pass) {
-  let deferred = Q.defer();
-  //不一定会更新password字段
-  if (!pass) deferred.resolve();
-  if (pass.length >= 6 && pass.length <= 16) {
-    deferred.resolve(exports.cryptoPass(pass));
-  } else {
-    deferred.reject({
-      statusCode: 200,
-      message: '密码 必须是 6 - 16 个字符'
-    });
-  }
-  return deferred.promise;
+	let deferred = Q.defer();
+	//不一定会更新password字段
+	if (!pass) {
+		deferred.resolve();
+		return deferred.promise;
+	}
+	if (pass.length >= 6 && pass.length <= 16) {
+		deferred.resolve(exports.cryptoPass(pass));
+	} else {
+		deferred.reject({
+			statusCode: 200,
+			message: '密码 必须是 6 - 16 个字符'
+		});
+	}
+	return deferred.promise;
 }
 
 exports.cryptoPass = function(pass) {

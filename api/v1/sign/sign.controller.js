@@ -86,16 +86,7 @@ function updateLastLogin() {
 
 function createMasterUser(userInfo) {
   userInfo.master = true;
-  return Q.fcall(() => {
-      if (!userInfo.name || !userInfo.password) {
-        return Q.reject({
-          message: '用户名和密码必填!'
-        });
-      }
-    })
-    .then(() => {
-      return Utils.checkPass(userInfo.password);
-    })
+  return Utils.checkPass(userInfo.password)
     .then(hashedPass => {
       if (hashedPass) {
         userInfo.password = hashedPass;
@@ -104,10 +95,7 @@ function createMasterUser(userInfo) {
     })
     .then(userInfo => {
       let masterUser = new User(userInfo);
-      //不执行validate验证
-      return masterUser.save({
-        validateBeforeSave: false
-      });
+      return masterUser.save();
     });
 }
 

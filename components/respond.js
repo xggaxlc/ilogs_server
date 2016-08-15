@@ -34,16 +34,19 @@ exports.removeEntity = function() {
 
 exports.handleEntityNotFound = function() {
   return entity => {
-    if (!entity) return Q.reject({ statusCode: 404, message: '没有找到这条数据！' });
+    if (!entity) return Q.reject({
+      statusCode: 404,
+      message: '没有找到这条数据！'
+    });
     return entity;
   }
 }
 
 exports.handleError = function(res) {
   return err => {
-    if(err.name === 'ValidationError') {
+    if (err.name === 'ValidationError') {
       var errorMsg = [];
-      for(let error in err.errors) {
+      for (let error in err.errors) {
         errorMsg.push(err.errors[error].message);
       }
       res.json({
@@ -52,10 +55,16 @@ exports.handleError = function(res) {
       });
     } else {
       if (err.statusCode) {
-        let error = _.omit(_.merge({ success: 0 }, err), 'statusCode');
+        let error = _.omit(_.merge({
+          success: 0
+        }, err), 'statusCode');
         res.status(err.statusCode).json(error);
       } else {
-        res.status(500).json(err);
+        let error = {
+          success: 0,
+          message: err.message
+        }
+        err.type === 'validateError' ? res.json(error) : res.status(500).json(error);
       }
     }
 

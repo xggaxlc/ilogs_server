@@ -91,7 +91,7 @@ exports.update = function(req, res) {
     delete req.body.role;
   }
 
-  return checkPass(req.body.password)
+  return Utils.checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) {
         req.body.password = hashedPass;
