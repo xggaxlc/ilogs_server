@@ -10,7 +10,6 @@
 
 const Q = require('q');
 const Post = require('./post.model');
-const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
@@ -20,7 +19,7 @@ exports.index = function(req, res) {
     req.query.puhlished = true;
   }
 
-  let queryFormated = Utils.formatQuery(req.query, ['content'], ['title']);
+  let queryFormated = Respond.formatQuery(req.query, ['content'], ['title']);
   return Q.all(
       [
         Post.count(queryFormated.query).exec(),

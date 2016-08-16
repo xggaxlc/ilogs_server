@@ -28,7 +28,7 @@ function checkMaster(updateUser, currentUser) {
 }
 
 exports.index = function(req, res) {
-  let queryFormated = Utils.formatQuery(req.query, ['password'], ['name']);
+  let queryFormated = Respond.formatQuery(req.query, ['password'], ['name']);
   return Q.all(
       [
         User.count(queryFormated.query).exec(),
@@ -87,7 +87,7 @@ exports.update = function(req, res) {
   delete req.body.master;
 
   //非master不能修改用户角色(间接拿到权限) master用户不能给自己加角色(无意义)
-  if (!req.currentUser.master || (req.currentUser._id.toString() === req.body._id.toString())) {
+  if (!req.currentUser.master || (req.currentUser._id.toString() === req.params.id.toString())) {
     delete req.body.role;
   }
 

@@ -10,11 +10,10 @@
 
 const Q = require('q');
 const Category = require('./category.model');
-const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
-  let queryFormated = Utils.formatQuery(req.query, [], ['name']);
+  let queryFormated = Respond.formatQuery(req.query, [], ['name']);
   return Q.all(
       [
         Category.count(queryFormated.query).exec(),
