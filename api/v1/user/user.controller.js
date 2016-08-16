@@ -101,10 +101,10 @@ exports.update = function(req, res) {
     .then(() => {
       return User.findById(req.params.id).exec();
     })
+    .then(Respond.handleEntityNotFound())
     .then(entity => {
       return checkMaster(entity, req.currentUser);
     })
-    .then(Respond.handleEntityNotFound())
     .then(Respond.saveUpdate(req.body))
     .then(entity => {
       return User.populate(entity, {

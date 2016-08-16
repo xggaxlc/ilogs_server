@@ -26,7 +26,8 @@ function checkLogin(req, res, next, mustLogin) {
 		vertifyToken(token)
 			.then(findUser())
 			.then(user => {
-				req.currentUser = user;
+				// 存global好像不太好...
+				global.currentUser = req.currentUser = user;
 				next();
 			})
 			.catch(err => {

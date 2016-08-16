@@ -16,7 +16,7 @@ function canSkipCheckPermission(req, res, next) {
   if (req.params.id && (req.currentUser._id.toString() === req.params.id.toString())) {
     next();
   } else {
-    checkPermission();
+    checkPermission(req, res, next);
   }
 }
 
