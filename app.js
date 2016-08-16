@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/environment');
 const path = require('path');
+const compression = require('compression');
 
 mongoose.Promise = require('q').Promise;
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -22,6 +23,8 @@ if (config.seedDB) {
 
 let app = express();
 let server = http.createServer(app);
+
+app.use(compression());
 
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
