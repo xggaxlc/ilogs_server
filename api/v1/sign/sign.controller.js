@@ -46,6 +46,11 @@ function findUser() {
         if (!entity) return Q.reject({
           message: '账户不存在'
         });
+
+        if (!entity.active) return Q.reject({
+          message: '账号已经被锁定'
+        });
+
         return [entity, userInfo];
       });
   }
@@ -76,7 +81,8 @@ function updateLastLogin() {
     return User.findOneAndUpdate({
         _id: entity._id
       }, {
-        last_login_at: new Date()
+        last_login_at: new Date(),
+        changed: false
       }, {
         new: true
       })

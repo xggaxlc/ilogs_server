@@ -14,9 +14,6 @@ const checkPermission = require('../../../components/checkPermission');
 router.use(checkPermission);
 
 router.get('/', Ctrl.index);
-router.get('/:id', Ctrl.show);
-router.post('/', Ctrl.create);
-router.put('/:id', Ctrl.update);
-router.delete('/:id', Ctrl.destroy);
+router.post('/', Ctrl.save);
 
 module.exports = router;

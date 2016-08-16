@@ -16,29 +16,17 @@ function findUser() {
 					statusCode: 401,
 					message: '此用户可能已经被删除！'
 				});
+
+				if (user.changed) return Q.reject({
+					statusCode: 401,
+					message: '信息有变动，需要重新登录！'
+				});
+
 				return user;
 			});
 	}
 }
 
-function checkChanged() {
-	return user => {
-		let defferd = Q.defer();
-		if (user.changed) {
-			user.changed = false;
-			user.save()
-				.then(() => {
-					defferd.reject({
-						statusCode: 401,
-						message: '信息有变动，需要重新登录！'
-					});
-				});
-		} else {
-			defferd.resove(user);
-		}
-		return defferd.promise;
-	}
-}
 
 function checkLogin(req, res, next, mustLogin) {
 	let token = req.headers.token || req.query.token || req.body.token || req.params.token;
@@ -50,7 +38,6 @@ function checkLogin(req, res, next, mustLogin) {
 	} else {
 		vertifyToken(token)
 			.then(findUser())
-			.then(checkChanged())
 			.then(user => {
 				// 存global好像不太好...
 				global.currentUser = req.currentUser = user;

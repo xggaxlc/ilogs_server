@@ -74,11 +74,7 @@ let RoleSchema = new mongoose.Schema({
       }
     },
     setting: {
-      delete: {
-        type: Boolean,
-        default: false
-      },
-      put: {
+      get: {
         type: Boolean,
         default: false
       },

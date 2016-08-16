@@ -57,6 +57,8 @@ exports.show = function(req, res) {
 
 exports.create = function(req, res) {
   delete req.body.master;
+  delete req.body.changed;
+  
   return Utils.checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) {
@@ -83,8 +85,9 @@ exports.create = function(req, res) {
 }
 
 exports.update = function(req, res) {
-  // master字段不能修改
+  // master changed字段不能修改
   delete req.body.master;
+  delete req.body.changed;
 
   //非master不能修改用户角色(间接拿到权限) master用户不能给自己加角色(无意义)
   if (!req.currentUser.master || (req.currentUser._id.toString() === req.params.id.toString())) {
