@@ -23,8 +23,8 @@ if (config.seedDB) {
 let app = express();
 let server = http.createServer(app);
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 //图片静态服务
 app.use('/' + config.upload.folderName, express.static(path.join(__dirname, config.upload.folderName)));
 app.use(morgan('dev'));
