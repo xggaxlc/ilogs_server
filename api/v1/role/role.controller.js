@@ -32,12 +32,12 @@ exports.show = function(req, res) {
       return _.pick(new Role(), ['permissions', 'active']);
     })
     .then(Respond.respondWithResult(res));
-  }
-
-  return Role.findById(id).exec()
+  } else {
+    Role.findById(id).exec()
     .then(Respond.handleEntityNotFound())
     .then(Respond.respondWithResult(res))
     .catch(Respond.handleError(res));
+  }
 }
 
 exports.create = function(req, res) {
