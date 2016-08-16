@@ -8,30 +8,58 @@ const _ = require('lodash');
 function findUser() {
 	return user_id => {
 		return User.findById(user_id)
-		.populate('role')
-		.exec()
-		.then(user => {
-			// 可能客户端的token正常,但是用户被删除了
-      if (!user) return Q.reject({ statusCode: 401, message: '此用户可能已经被删除！' });	
-      return user;
-		}); 
+			.populate('role')
+			.exec()
+			.then(user => {
+				// 可能客户端的token正常,但是用户被删除了
+				if (!user) return Q.reject({
+					statusCode: 401,
+					message: '此用户可能已经被删除！'
+				});
+				return user;
+			});
+	}
+}
+
+function checkChanged() {
+	return user => {
+		let defferd = Q.defer();
+		if (user.changed) {
+			user.changed = false;
+			user.save()
+				.then(() => {
+					defferd.reject({
+						statusCode: 401,
+						message: '信息有变动，需要重新登录！'
+					});
+				});
+		} else {
+			defferd.resove(user);
+		}
+		return defferd.promise;
 	}
 }
 
 function checkLogin(req, res, next, mustLogin) {
 	let token = req.headers.token || req.query.token || req.body.token || req.params.token;
 	if (!token) {
-		mustLogin ? res.status(401).json({ success: 0, message: '请登录!' }) : next();
+		mustLogin ? res.status(401).json({
+			success: 0,
+			message: '请登录!'
+		}) : next();
 	} else {
 		vertifyToken(token)
 			.then(findUser())
+			.then(checkChanged())
 			.then(user => {
 				// 存global好像不太好...
 				global.currentUser = req.currentUser = user;
 				next();
 			})
 			.catch(err => {
-				let error = _.merge(err, { success: 0 });
+				let error = _.merge(err, {
+					success: 0
+				});
 				err.statusCode ? res.status(err.statusCode).json(error) : res.status(500).json(error);
 			});
 	}

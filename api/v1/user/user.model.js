@@ -10,6 +10,10 @@ let UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  changed: {
+    type: Boolean,
+    default: false
+  },
   name: {
     type: String,
     trim: true,
@@ -71,7 +75,6 @@ UserSchema.plugin(uniqueValidator, {
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
-  // console.log(global.currentUser)
   // master没有角色
   if (!this.role && !this.master) {
     next(new ValidateError('角色必填'));
