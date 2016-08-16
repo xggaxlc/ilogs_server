@@ -122,6 +122,9 @@ exports.update = function(req, res) {
 }
 
 exports.destroy = function(req, res) {
+  if (req.params.id.toString() === req.currentUser._id.toString()) {
+    return res.json({ success: 0, message: '你无法删除你自己' });
+  }
   return User.findById(req.params.id).exec()
     .then(entity => {
       return checkMaster(entity, req.currentUser);

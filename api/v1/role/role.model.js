@@ -26,7 +26,7 @@ let RoleSchema = new mongoose.Schema({
       },
       post: {
         type: Boolean,
-        default: true
+        default: false
       }
     },
     role: {
@@ -50,7 +50,7 @@ let RoleSchema = new mongoose.Schema({
       },
       put: {
         type: Boolean,
-        default: true
+        default: false
       },
       post: {
         type: Boolean,
@@ -64,11 +64,7 @@ let RoleSchema = new mongoose.Schema({
       },
       put: {
         type: Boolean,
-        default: true
-      },
-      post: {
-        type: Boolean,
-        default: true
+        default: false
       }
     },
     mail: {
@@ -92,10 +88,6 @@ let RoleSchema = new mongoose.Schema({
       }
     },
     upload: {
-      post: {
-        type: Boolean,
-        default: true
-      },
       delete: {
         type: Boolean,
         default: false

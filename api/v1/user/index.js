@@ -12,17 +12,19 @@ const canLogin = CheckLogin.canLogin;
 //检查权限
 const checkPermission = require('../../../components/checkPermission');
 
-router.get('/', canLogin, checkPermission, Ctrl.index);
-router.get('/:id', canLogin, checkPermission, Ctrl.show);
-router.post('/', mustLogin, checkPermission, Ctrl.create);
-router.put('/:id', mustLogin, function(req, res, next) {
-  // 修改自己的资料不需要permission验证
+function canSkipCheckPermission(req, res, next) {
   if (req.params.id && (req.currentUser._id.toString() === req.params.id.toString())) {
     next();
   } else {
     checkPermission();
   }
-}, Ctrl.update);
+}
+
+router.get('/', canLogin, checkPermission, Ctrl.index);
+router.get('/:id', canLogin, checkPermission, Ctrl.show);
+router.post('/', mustLogin, checkPermission, Ctrl.create);
+// 修改自己的资料不需要验证权限
+router.put('/:id', mustLogin, canSkipCheckPermission, Ctrl.update);
 router.delete('/:id', mustLogin, checkPermission, Ctrl.destroy);
 
 module.exports = router;
