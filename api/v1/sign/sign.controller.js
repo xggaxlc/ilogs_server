@@ -96,7 +96,7 @@ function createMasterUser(userInfo) {
     .then(hashedPass => {
       if (hashedPass) {
         userInfo.password = hashedPass;
-      };
+      }
       return userInfo;
     })
     .then(userInfo => {
