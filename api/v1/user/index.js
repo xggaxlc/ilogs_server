@@ -15,7 +15,14 @@ const checkPermission = require('../../../components/checkPermission');
 router.get('/', canLogin, checkPermission, Ctrl.index);
 router.get('/:id', canLogin, checkPermission, Ctrl.show);
 router.post('/', mustLogin, checkPermission, Ctrl.create);
-router.put('/:id', mustLogin, checkPermission, Ctrl.update);
+router.put('/:id', mustLogin, function(req, res, next) {
+  // 修改自己的资料不需要permission验证
+  if (req.params.id && (req.currentUser._id.toString() === req.params.id.toString())) {
+    next();
+  } else {
+    checkPermission();
+  }
+}, Ctrl.update);
 router.delete('/:id', mustLogin, checkPermission, Ctrl.destroy);
 
 module.exports = router;
