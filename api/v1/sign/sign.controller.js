@@ -5,7 +5,6 @@
 
 'use strict';
 
-const _ = require('lodash');
 const Q = require('q');
 const validator = require('validator');
 const User = require('../user/user.model');
@@ -112,7 +111,7 @@ function createMasterUser(userInfo) {
 }
 
 function createCommonUser(userInfo) {
-  // delete userInfo.master;
+  delete userInfo.master;
   // return Utils.checkPass(userInfo.password)
   //   .then(hashedPass => {
   //     if (hashedPass) return userInfo.password = hashedPass;
