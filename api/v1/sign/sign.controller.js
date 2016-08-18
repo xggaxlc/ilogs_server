@@ -9,15 +9,18 @@ const _ = require('lodash');
 const Q = require('q');
 const validator = require('validator');
 const User = require('../user/user.model');
-const Utils = require('../../../components/utils.js');
+const Utils = require('../../../components/utils');
 const Token = require('../../../components/token');
+const Respond = require('../../../components/respond');
 
 function checkEmpty(userInfo) {
   return Q.fcall(() => {
     if (!userInfo.account_name) return Q.reject({
+      statusCode: 200,
       message: '账户名必填'
     });
     if (!userInfo.password) return Q.reject({
+      statusCode: 200,
       message: '密码必填'
     });
     return userInfo;
@@ -44,10 +47,12 @@ function findUser() {
       .exec()
       .then(entity => {
         if (!entity) return Q.reject({
+          statusCode: 200,
           message: '账户不存在'
         });
 
         if (!entity.active) return Q.reject({
+          statusCode: 200,
           message: '账号已经被锁定'
         });
 
@@ -60,6 +65,7 @@ function checkPass() {
   return (entity, userInfo) => {
     return Q.fcall(() => {
       if (Utils.cryptoPass(userInfo.password) != entity.password) return Q.reject({
+        statusCode: 200,
         message: '密码错误'
       });
       return entity;
@@ -116,6 +122,7 @@ function createCommonUser(userInfo) {
   //     return newUser.save();
   //   });
   return Q.reject({
+    statusCode: 200,
     message: '暂不支持注册！'
   });
 }
@@ -136,11 +143,7 @@ exports.signin = function(req, res) {
         user: user
       });
     })
-    .catch(err => {
-      res.json(_.merge({
-        success: 0
-      }, err));
-    });
+    .catch(Respond.handleError(res));
 }
 
 exports.signup = function(req, res) {
@@ -160,9 +163,5 @@ exports.signup = function(req, res) {
         user: user
       });
     })
-    .catch(err => {
-      res.json(_.merge({
-        success: 0
-      }, err));
-    });
+    .catch(Respond.handleError(res));
 }
