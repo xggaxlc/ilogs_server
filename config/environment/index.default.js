@@ -4,8 +4,9 @@
 
 const _ = require('lodash');
 
+
 let all = {
-  env: process.env.NODE_ENV || 'development',
+  env: process.env.NODE_ENV,
   port: process.env.PORT || 9000,
   ip: process.env.IP || '0.0.0.0',
   seedDB: false,
@@ -36,7 +37,7 @@ let all = {
 
 let config = _.merge(
   all,
-  require(`./${process.env.NODE_ENV}.js`) || {}
+  require(`./${process.env.NODE_ENV || 'development'}.js`) || {}
 );
 
 // 自己看着改
