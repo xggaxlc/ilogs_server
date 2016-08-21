@@ -21,10 +21,13 @@ exports.index = function(req, res) {
 }
 
 exports.save = function(req, res) {
-  if (!req.body._id) return res.json({ success: 0, message: '需要先GET请求此接口创建setting' });
-  return Setting.findById(req.params.id).exec()
-      .then(Respond.handleEntityNotFound())
-      .then(Respond.saveUpdate(req.body))
-      .then(Respond.respondWithResult(res))
-      .catch(Respond.handleError(res));
+  if (!req.body._id) return res.json({
+    success: 0,
+    message: '需要先GET请求此接口创建setting'
+  });
+  return Setting.findById(req.body._id).exec()
+    .then(Respond.handleEntityNotFound())
+    .then(Respond.saveUpdate(req.body))
+    .then(Respond.respondWithResult(res))
+    .catch(Respond.handleError(res));
 }
