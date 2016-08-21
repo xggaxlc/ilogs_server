@@ -32,7 +32,7 @@ exports.sendResetPassEmail = function(email, resetLink, resetExpire) {
 			<h3>重置密码</h3>
 			<p>此链接有效期: ${resetExpire}</p>
 			<p>此链接仅可成功重置密码一次，成功重置密码后将立即失效</p>
-			<p><a href="${resetLink}">点击重置密码</p>
+			<p><a href="${resetLink}">点击重置密码</a></p>
 		`
 	}
 
@@ -49,7 +49,7 @@ exports.sendInviteEmail = function(email, signupLink, signupExpire, invitor) {
 			<h3><strong>${invitor.name}（email: ${invitor.email}）</strong>邀请您注册</h3>
 			<p>此链接有效期: ${signupExpire}</p>
 			<p>此链接仅可成功注册一次，成功注册后将立即失效</p>
-			<p><a href="${signupLink}">点击注册</p>
+			<p><a href="${signupLink}">点击注册</a></p>
 		`
 	}
 
