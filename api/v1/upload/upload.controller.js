@@ -26,7 +26,15 @@ function uploadSingleFile(req, res, fieldName) {
       });
 
     deferred.resolve({
-      url: `${config.host}/${config.upload.folderName}/${opts.folderName}/${req.file.filename}`,
+      files: [
+        {
+          url: `${config.host}/${config.upload.folderName}/${opts.folderName}/${req.file.filename}`,
+          name: req.file.filename,
+          originalname: req.file.originalname,
+          size: req.file.size,
+          type: req.file.mimetype
+        }
+      ],
       message: '上传成功！'
     });
   });
