@@ -1,21 +1,24 @@
 'use strict';
 
 module.exports = function(app) {
+
+  let inviteController = require('../api/v1/invite');
+  let signController = require('../api/v1/sign');  
   let categoryController = require('../api/v1/category');
   let roleController = require('../api/v1/role');
   let userController = require('../api/v1/user');
   let postController = require('../api/v1/post');
   let settingController = require('../api/v1/setting');
-  let signController = require('../api/v1/sign');
   let uploadController = require('../api/v1/upload');
 
-  app.use('/api/v1/sign', signController);
-  app.use('/api/v1/category', categoryController);
-  app.use('/api/v1/role', roleController);
-  app.use('/api/v1/user', userController);
-  app.use('/api/v1/post', postController);
-  app.use('/api/v1/setting', settingController);
-  app.use('/api/v1/upload', uploadController);
+  app.use('/api/invite', inviteController);
+  app.use('/api/sign', signController);
+  app.use('/api/category', categoryController);
+  app.use('/api/role', roleController);
+  app.use('/api/user', userController);
+  app.use('/api/post', postController);
+  app.use('/api/setting', settingController);
+  app.use('/api/upload', uploadController);
 
   app.route('/:url(api|config|components|)/*')
     .all((req, res) => {

@@ -15,62 +15,16 @@ let RoleSchema = new mongoose.Schema({
     default: true
   },
   permissions: {
-    category: {
-      delete: {
-        type: Boolean,
-        default: false
-      },
-      put: {
-        type: Boolean,
-        default: false
-      },
+    invite: {
       post: {
         type: Boolean,
         default: false
       }
     },
-    role: {
+    upload: {
       delete: {
         type: Boolean,
-        default: false
-      },
-      put: {
-        type: Boolean,
-        default: false
-      },
-      post: {
-        type: Boolean,
-        default: false
-      }
-    },
-    user: {
-      delete: {
-        type: Boolean,
-        default: false
-      },
-      put: {
-        type: Boolean,
-        default: false
-      },
-      post: {
-        type: Boolean,
-        default: false
-      }
-    },
-    post: {
-      delete: {
-        type: Boolean,
-        default: false
-      },
-      put: {
-        type: Boolean,
-        default: false
-      }
-    },
-    mail: {
-      post: {
-        type: Boolean,
-        default: false
+        default: true
       }
     },
     setting: {
@@ -83,7 +37,53 @@ let RoleSchema = new mongoose.Schema({
         default: false
       }
     },
-    upload: {
+    post: {
+      put: {
+        type: Boolean,
+        default: false
+      },
+      delete: {
+        type: Boolean,
+        default: false
+      }
+    },
+    category: {
+      post: {
+        type: Boolean,
+        default: true
+      },
+      put: {
+        type: Boolean,
+        default: false
+      },
+      delete: {
+        type: Boolean,
+        default: false
+      }
+    },
+    user: {
+      post: {
+        type: Boolean,
+        default: false
+      },
+      put: {
+        type: Boolean,
+        default: false
+      },
+      delete: {
+        type: Boolean,
+        default: false
+      }
+    },
+    role: {
+      post: {
+        type: Boolean,
+        default: false
+      },
+      put: {
+        type: Boolean,
+        default: false
+      },
       delete: {
         type: Boolean,
         default: false
@@ -104,9 +104,24 @@ RoleSchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
+module.exports = mongoose.model('Role', RoleSchema);
+
+// middleware
+const ValidateError = require('../../../components/utils.js').ValidateError;
+const User = require('../user/user.model');
+
 RoleSchema.pre('save', function(next) {
   this.update_at = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Role', RoleSchema);
+RoleSchema.pre('remove', function(next) {
+  User.findOne({ role: this._id }).exec()
+    .then(entity => {
+      if (entity) return next(new ValidateError('有用户使用此用户组,无法删除')); 
+      next();
+    })
+    .catch(err => {
+      next(err);
+    });
+});

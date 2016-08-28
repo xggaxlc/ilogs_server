@@ -1,9 +1,8 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('./user.validator');
-const ValidateError = require('../../../components/utils.js').ValidateError;
+const uniqueValidator = require('mongoose-unique-validator');
 
 let UserSchema = new mongoose.Schema({
   master: {
@@ -73,13 +72,27 @@ UserSchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
+module.exports = mongoose.model('User', UserSchema);
+
+
+// middleware
+const ValidateError = require('../../../components/utils.js').ValidateError;
+const Role = require('../role/role.model');
+
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
-  // master没有角色
-  if (!this.role && !this.master) {
-    next(new ValidateError('角色必填'));
+  if (!this.role) {
+    if (!this.master) return next(new ValidateError('用户组必填'));
+    // master没有角色
+    next();
+  } else {
+   Role.findById(this.role).exec()
+    .then(entity => {
+      if (!entity) return next(new ValidateError('没有这个角色'));
+      next();
+    })
+    .catch(err => {
+      next(err);
+    });
   }
-  next();
 });
-
-module.exports = mongoose.model('User', UserSchema);

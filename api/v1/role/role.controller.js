@@ -14,10 +14,16 @@ const Role = require('./role.model');
 const Respond = require('../../../components/respond');
 
 exports.index = function(req, res) {
+  let queryFormated = Respond.formatQuery(req.query, [], ['name']);
   return Q.all(
       [
-        Role.count().exec(),
-        Role.find().exec()
+        Role.count(queryFormated.query).exec(),
+        Role.find(queryFormated.query)
+        .sort(queryFormated.sort)
+        .limit(queryFormated.limit)
+        .skip(queryFormated.skip)
+        .select(queryFormated.select)
+        .exec()
       ]
     )
     .spread(Respond.respondWithCountAndResult(res))
