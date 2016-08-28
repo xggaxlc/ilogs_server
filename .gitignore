@@ -2,3 +2,4 @@ node_modules/
 config/environment/index.js
 npm-debug.log.*
 /upload/
+npm-debug.log
