@@ -23,9 +23,27 @@ CategorySchema.plugin(uniqueValidator, {
   message: '{VALUE} 已经被使用'
 });
 
+module.exports = mongoose.model('Category', CategorySchema);
+
+const Log = require('../log/log.model');
+
 CategorySchema.pre('save', function(next) {
   this.update_at = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Category', CategorySchema);
+CategorySchema.post('save', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `创建或者更新了[分类]--${doc.name}`
+  });
+  newLog.save();
+});
+
+CategorySchema.post('remove', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `删除了[分类]--${doc.name}`
+  });
+  newLog.save();
+});

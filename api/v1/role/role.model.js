@@ -109,6 +109,7 @@ module.exports = mongoose.model('Role', RoleSchema);
 // middleware
 const ValidateError = require('../../../components/utils.js').ValidateError;
 const User = require('../user/user.model');
+const Log = require('../log/log.model');
 
 RoleSchema.pre('save', function(next) {
   this.update_at = Date.now();
@@ -124,4 +125,20 @@ RoleSchema.pre('remove', function(next) {
     .catch(err => {
       next(err);
     });
+});
+
+RoleSchema.post('save', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `创建或者更新了[角色]--${doc.name}`
+  })
+  newLog.save();
+});
+
+RoleSchema.post('remove', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `删除了[角色]--${doc.name}`
+  });
+  newLog.save();
 });

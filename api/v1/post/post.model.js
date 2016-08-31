@@ -52,9 +52,28 @@ let PostSchema = new mongoose.Schema({
   }
 });
 
+module.exports = mongoose.model('Post', PostSchema);
+
+const Log = require('../log/log.model');
+
 PostSchema.pre('save', function(next) {
   this.update_at = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+PostSchema.post('save', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `创建或者更新了[文章]--${doc.title}`
+  })
+  newLog.save();
+});
+
+PostSchema.post('remove', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `删除了[文章]--${doc.title}`
+  });
+  newLog.save();
+});
+

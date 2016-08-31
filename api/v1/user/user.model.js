@@ -74,10 +74,10 @@ UserSchema.plugin(uniqueValidator, {
 
 module.exports = mongoose.model('User', UserSchema);
 
-
 // middleware
 const ValidateError = require('../../../components/utils.js').ValidateError;
 const Role = require('../role/role.model');
+const Log = require('../log/log.model');
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
@@ -95,4 +95,20 @@ UserSchema.pre('save', function(next) {
       next(err);
     });
   }
+});
+
+UserSchema.post('save', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `创建或者更新了[用户]--${doc.name}--${doc.email}`
+  });
+  newLog.save();
+});
+
+UserSchema.post('remove', function(doc) {
+  let newLog = new Log({
+    name: global.currentUser._id,
+    content: `删除了[用户]--${doc.name}--${doc.email}`
+  });
+  newLog.save();
 });
