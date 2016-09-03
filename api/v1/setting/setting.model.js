@@ -3,22 +3,22 @@
 const mongoose = require('mongoose');
 
 let SettingSchema = new mongoose.Schema({
-	resetpass_link: {
-		type: String,
-		default: ''
-	},
-	resetpass_expire: {
-		type: Number,
-		default: 1 //单位 天
-	},
-	signup_link: {
-		type: String,
-		default: ''
-	},
-	signup_expire: {
-		type: Number,
-		default: 7 //单位 天
-	},
+  resetpass_link: {
+    type: String,
+    default: ''
+  },
+  resetpass_expire: {
+    type: Number,
+    default: 1 //单位 天
+  },
+  signup_link: {
+    type: String,
+    default: ''
+  },
+  signup_expire: {
+    type: Number,
+    default: 7 //单位 天
+  },
   create_at: {
     type: Date,
     default: Date.now

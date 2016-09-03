@@ -35,7 +35,10 @@ exports.vertifyToken = function(token) {
 
   jwt.verify(token, SECRETKEY, options, (err, decoded) => {
     if (err) {
-      deferred.reject({ statusCode: 401, message: 'token无效或者已经过期！' });
+      deferred.reject({
+        statusCode: 401,
+        message: 'token无效或者已经过期！'
+      });
     } else {
       deferred.resolve(decoded);
     }

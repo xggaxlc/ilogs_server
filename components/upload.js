@@ -31,7 +31,7 @@ exports.uploadImage = function(opts) {
       files: 10
     },
     fileFilter: opts.fileFilter || function(req, file, cb) {
-      if (! (file.mimetype.indexOf('image/') === 0)) return cb('不支持的格式', false);
+      if (!(file.mimetype.indexOf('image/') === 0)) return cb('不支持的格式', false);
       cb(null, true);
     }
   });
@@ -57,7 +57,7 @@ exports.deleteFile = function(fileName) {
   let filePath = path.join(__dirname, `../${config.upload.folderName}`, fileName.split('-')[0], fileName);
 
   fs.unlink(filePath, err => {
-    if (err)  {
+    if (err) {
       deferred.reject(err);
     } else {
       deferred.resolve();
