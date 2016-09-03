@@ -111,21 +111,21 @@ exports.post = function(req, res) {
 	let limit = req.query.limit || 6;
 	let queryFormated = Respond.formatQuery(req.query);
 	Q.all([
-		createRange(limit),
-		Post.find(queryFormated.query).select('create_at').lean().exec()
-	])
-	.spread((range, posts) => {
-		return range.map(item => {
-			return {
-				name: item.name,
-				count: posts.filter(deepItem => {
-					let timestamp = deepItem.create_at.getTime();
-					return timestamp >= item.range[0] && timestamp <= item.range[1];
-				}).length
-			}
-		});
-	})
-	.then(Respond.respondWithResult(res))
-	.catch(Respond.handleError(res));
+			createRange(limit),
+			Post.find(queryFormated.query).select('create_at').lean().exec()
+		])
+		.spread((range, posts) => {
+			return range.map(item => {
+				return {
+					name: item.name,
+					count: posts.filter(deepItem => {
+						let timestamp = deepItem.create_at.getTime();
+						return timestamp >= item.range[0] && timestamp <= item.range[1];
+					}).length
+				}
+			});
+		})
+		.then(Respond.respondWithResult(res))
+		.catch(Respond.handleError(res));
 
 }
