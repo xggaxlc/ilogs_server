@@ -23,6 +23,20 @@ exports.sendMail = function(data) {
 	return deferred.promise;
 }
 
+exports.sendInfoChangedEmail = function(email, operator) {
+  let data = {
+    from: config.mail.auth.user,
+    to: email,
+    subject: '信息被修改',
+    html: `
+      <p>你的身份信息已经被 <strong>${operator.name}(${operator.email})</strong>修改。</p>
+      <p>详情请联系 <strong>${operator.email}</strong>。</p>
+    `
+  }
+
+  return exports.sendMail(data);  
+}
+
 exports.sendResetPassEmail = function(email, resetLink, resetExpire) {
 	let data = {
 		from: config.mail.auth.user,

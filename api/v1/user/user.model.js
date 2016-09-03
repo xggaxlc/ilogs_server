@@ -78,22 +78,32 @@ module.exports = mongoose.model('User', UserSchema);
 const ValidateError = require('../../../components/utils.js').ValidateError;
 const Role = require('../role/role.model');
 const Log = require('../log/log.model');
+const Mailer = require('../../../components/mail');
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
+
+  try {
+    if (this._id.toString() !== global.currentUser._id.toString()) {
+      this.changed = true;
+    }
+  } catch(e) {
+    this.changed = this.changed || false;
+  }
+
   if (!this.role) {
     if (!this.master) return next(new ValidateError('用户组必填'));
     // master没有角色
     next();
   } else {
-   Role.findById(this.role).exec()
-    .then(entity => {
-      if (!entity) return next(new ValidateError('没有这个角色'));
-      next();
-    })
-    .catch(err => {
-      next(err);
-    });
+    Role.findById(this.role).exec()
+      .then(entity => {
+        if (!entity) return next(new ValidateError('没有这个角色'));
+        next();
+      })
+      .catch(err => {
+        next(err);
+      });
   }
 });
 
@@ -103,6 +113,12 @@ UserSchema.post('save', function(doc) {
     content: `创建或者更新了[用户]--${doc.name}--${doc.email}`
   });
   newLog.save();
+
+  if (doc._id.toString() !== global.currentUser._id.toString()) {
+    //发邮件通知
+    Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
+  }
+
 });
 
 UserSchema.post('remove', function(doc) {

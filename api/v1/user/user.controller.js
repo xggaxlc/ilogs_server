@@ -94,10 +94,6 @@ exports.update = function(req, res) {
     delete req.body.role;
   }
 
-  if (req.currentUser._id.toString() !== req.params.id.toString()) {
-    req.body.changed = true;
-  }
-
   return Utils.checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) {
