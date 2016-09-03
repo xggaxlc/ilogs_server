@@ -43,7 +43,7 @@ exports.user = function(req, res) {
   let limit = Number(req.query.limit) || 10;
   Q.all([
       Post.find().select('author').lean().exec(),
-      User.find().lean().exec()
+      User.find({ active: true }).lean().exec()
     ])
     .spread((posts, Users) => {
       return Users.map(item => {
@@ -104,7 +104,7 @@ function createRange(limit) {
       count: 0
     });
   }
-  return range;
+  return range.reverse();
 }
 
 exports.post = function(req, res) {

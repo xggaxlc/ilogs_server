@@ -110,6 +110,7 @@ module.exports = mongoose.model('Role', RoleSchema);
 const ValidateError = require('../../../components/utils.js').ValidateError;
 const User = require('../user/user.model');
 const Log = require('../log/log.model');
+const Q = require('q');
 
 RoleSchema.pre('save', function(next) {
   this.update_at = Date.now();
@@ -128,11 +129,22 @@ RoleSchema.pre('remove', function(next) {
 });
 
 RoleSchema.post('save', function(doc) {
+  
   let newLog = new Log({
     name: global.currentUser._id,
     content: `创建或者更新了[角色]--${doc.name}`
-  })
-  newLog.save();
+  });
+
+  Q.all([
+    // 记录Log
+    newLog.save(),
+    // role修改下线所有此角色的用户
+    User.update({ role: doc._id }, { $set: { changed: true } }, { multi: true })
+  ])
+  .catch(err => {
+    console.error(err);
+  });
+
 });
 
 RoleSchema.post('remove', function(doc) {

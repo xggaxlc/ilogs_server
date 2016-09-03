@@ -115,8 +115,7 @@ exports.update = function(req, res) {
     .then(Respond.saveUpdate(req.body))
     .then(entity => {
       return User.populate(entity, {
-        path: 'role',
-        select: '-permissions'
+        path: 'role'
       })
     })
     .then(entity => {
