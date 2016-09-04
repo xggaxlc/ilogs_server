@@ -8,6 +8,8 @@
   "instances" : "max",
   "exec_mode": "cluster",
   "env": {
+    "IP": "0.0.0.0", //填写服务器IP
+    "PORT": 9000,
     "NODE_ENV": "production"
   }
 }
