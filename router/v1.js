@@ -13,16 +13,16 @@ module.exports = function(app) {
   let logController = require('../api/v1/log');
   let statisticsController = require('../api/v1/statistics');
 
-  app.use('/api/invite', inviteController);
-  app.use('/api/sign', signController);
-  app.use('/api/category', categoryController);
-  app.use('/api/role', roleController);
-  app.use('/api/user', userController);
-  app.use('/api/post', postController);
-  app.use('/api/setting', settingController);
-  app.use('/api/upload', uploadController);
-  app.use('/api/log', logController);
-  app.use('/api/statistics', statisticsController);
+  app.use('/invite', inviteController);
+  app.use('/sign', signController);
+  app.use('/category', categoryController);
+  app.use('/role', roleController);
+  app.use('/user', userController);
+  app.use('/post', postController);
+  app.use('/setting', settingController);
+  app.use('/upload', uploadController);
+  app.use('/log', logController);
+  app.use('/statistics', statisticsController);
 
   app.route('/:url(api|config|components|)/*')
     .all((req, res) => {
