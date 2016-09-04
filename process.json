@@ -1,0 +1,13 @@
+// for pm2
+// pm2 start process.json
+{
+  "name": "ilogs_server",
+  "script": "./app.js",
+  "watch": true,
+  "ignore_watch": ["node_modules", "upload/"],
+  "instances" : "max",
+  "exec_mode": "cluster",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
