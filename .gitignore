@@ -4,3 +4,4 @@ process.json
 npm-debug.log.*
 /upload/
 npm-debug.log
+*.log

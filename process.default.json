@@ -2,14 +2,16 @@
 // pm2 start process.json
 {
   "name": "ilogs_server",
-  "script": "./app.js",
-  "watch": true,
-  "ignore_watch": ["node_modules", "upload/"],
+  "script": "app.js",
   "instances" : "max",
   "exec_mode": "cluster",
   "env": {
-    "IP": "0.0.0.0", //填写服务器IP
+  	"IP": "0.0.0.0", //填写服务器IP
     "PORT": 9000,
     "NODE_ENV": "production"
-  }
+  },
+  "log_file": "log.log",
+  "error_file": "error.log",
+  "log_date_format": "YYYY-MM-DD HH:mm Z",
+  "watch": ["api","components", "config", "router", "app.js"]
 }
