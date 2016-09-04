@@ -15,7 +15,10 @@ let PostSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, '作者必填']
   },
-  content: {
+  md: {
+    type: String
+  },
+  html: {
     type: String
   },
   cover: {
