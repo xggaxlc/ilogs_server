@@ -30,6 +30,8 @@ function findUser() {
 
 function checkLogin(req, res, next, mustLogin) {
   let token = req.headers.token || req.query.token || req.body.token || req.params.token;
+  // 设置currentUser;
+  global.currentUser = null;
   if (!token) {
     mustLogin ? res.status(401).json({
       success: 0,
