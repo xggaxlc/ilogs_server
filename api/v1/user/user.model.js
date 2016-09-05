@@ -115,7 +115,9 @@ UserSchema.post('save', function(doc) {
       })
       .save()
       .then(() => {
-        Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
+        if (!doc.retrieve_time && !doc.retrieve_key) {
+          Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
+        }
       });
   }
 
