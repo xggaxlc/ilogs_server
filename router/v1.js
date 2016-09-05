@@ -13,6 +13,9 @@ module.exports = function(app) {
   let logController = require('../api/v1/log');
   let statisticsController = require('../api/v1/statistics');
 
+  // 设置当前登录用户currentUser;
+  global.currentUser = null;
+
   app.use('/invite', inviteController);
   app.use('/sign', signController);
   app.use('/category', categoryController);
