@@ -87,7 +87,7 @@ UserSchema.pre('save', function(next) {
     if (this._id.toString() !== global.currentUser._id.toString()) {
       this.changed = true;
     }
-  } catch(e) {
+  } catch (e) {
     this.changed = this.changed || false;
   }
 
@@ -108,15 +108,15 @@ UserSchema.pre('save', function(next) {
 });
 
 UserSchema.post('save', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `创建或者更新了[用户]--${doc.name}--${doc.email}`
-  });
-  newLog.save();
-
-  if (doc._id.toString() !== global.currentUser._id.toString()) {
-    //发邮件通知
-    Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
+  if (global.currentUser) {
+    new Log({
+        name: global.currentUser._id,
+        content: `创建或者更新了[用户]--${doc.name}--${doc.email}`
+      })
+      .save()
+      .then(() => {
+        Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
+      });
   }
 
 });

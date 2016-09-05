@@ -16,6 +16,8 @@ const Utils = require('../../../components/utils');
 const Token = require('../../../components/token');
 const Respond = require('../../../components/respond');
 const Mailer = require('../../../components/mail');
+const Log = require('../log/log.model');
+
 
 function checkEmpty(userInfo) {
   return Q.fcall(() => {
@@ -188,6 +190,14 @@ exports.signup = function(req, res) {
     .then(createToken())
     .spread((token, entity) => {
       let user = entity.toObject();
+
+      // 写入记录
+      new Log({
+        name: user._id,
+        content: `成功注册`
+      })
+      .save();
+
       delete user.password;
       res.json({
         success: 1,
@@ -309,6 +319,14 @@ exports.resetPass = function(req, res) {
       user.changed = true;
       user.retrieve_key = null;
       user.retrieve_time = null;
+
+      // 写入记录
+      new Log({
+        name: user._id,
+        content: `重置了密码`
+      })
+      .save();
+
       return user.save();
     })
     .then(() => {
