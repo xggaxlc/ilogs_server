@@ -59,12 +59,20 @@ exports.show = function(req, res) {
 }
 
 exports.create = function(req, res) {
+
+  // 添加作者
+  req.body.author = req.currentUser._id;
+
   return Post.create(req.body)
     .then(Respond.respondWithResult(res, 201))
     .catch(Respond.handleError(res));
 }
 
 exports.update = function(req, res) {
+
+  // 更新不能更改作者
+  delete req.body.author;
+
   if (req.currentUser) {
     req.body.update_by = req.currentUser._id;
   }
