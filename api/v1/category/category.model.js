@@ -37,7 +37,7 @@ CategorySchema.post('save', function(doc) {
     if (global.reqMethod === 'POST') {
       new Log({
         name: global.currentUser._id,
-        content: `创建了分类${doc.name}`
+        content: `创建了分类：${doc.name}`
       }).save();
 
     } else if (global.reqMethod === 'PUT') {
