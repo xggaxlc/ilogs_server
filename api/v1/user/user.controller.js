@@ -120,7 +120,7 @@ exports.update = function(req, res) {
       delete updatedUser.password;
       
       // 发送邮件通知信息被修改
-      if (updatedUser._id.toString() !== global.currentUser._id.toString) {
+      if (updatedUser._id.toString() !== global.currentUser._id.toString()) {
         Mailer.sendInfoChangedEmail(updatedUser.email, global.currentUser);
       }
 
