@@ -65,18 +65,26 @@ PostSchema.pre('save', function(next) {
 });
 
 PostSchema.post('save', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `创建或者更新了[文章]--${doc.title}`
-  })
-  newLog.save();
+  if (global.currentUser) {
+    if (global.reqMethod === 'POST') {
+      new Log({
+        name: global.currentUser._id,
+        content: `创建了文章：${doc.title}`
+      }).save();
+    } else if (global.reqMethod === 'PUT') {
+      new Log({
+        name: global.currentUser._id,
+        content: `更新了文章：${doc.title}`
+      }).save();
+    }
+  }
 });
 
 PostSchema.post('remove', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `删除了[文章]--${doc.title}`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    new Log({
+      name: global.currentUser._id,
+      content: `删除了文章：${doc.title}`
+    }).save();
+  }
 });
-

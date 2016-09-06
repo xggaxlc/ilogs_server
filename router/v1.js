@@ -16,6 +16,8 @@ module.exports = function(app) {
   app.use((req, res, next) => {
     // 设置当前登录用户currentUser;
     global.currentUser = null;
+    // 设置当前请求方法
+    global.reqMethod = req.method.toUpperCase();
     next();
   });
 

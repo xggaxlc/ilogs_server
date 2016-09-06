@@ -12,6 +12,7 @@ const Q = require('q');
 const User = require('./user.model');
 const Utils = require('../../../components/utils');
 const Respond = require('../../../components/respond');
+const Mailer = require('../../../components/mail');
 
 // 非master用户无法修改master用户
 function checkMaster(updateUser, currentUser) {
@@ -117,6 +118,12 @@ exports.update = function(req, res) {
     .then(entity => {
       let updatedUser = entity.toObject();
       delete updatedUser.password;
+      
+      // 发送邮件通知信息被修改
+      if (updatedUser._id.toString() !== global.currentUser._id.toString) {
+        Mailer.sendInfoChangedEmail(updatedUser.email, global.currentUser);
+      }
+
       return updatedUser;
     })
     .then(Respond.respondWithResult(res))

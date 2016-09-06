@@ -14,7 +14,7 @@ function findUser() {
         // 可能客户端的token正常,但是用户被删除了
         if (!user) return Q.reject({
           statusCode: 401,
-          message: '此用户可能已经被删除！'
+          message: '不存在此用户或者已经被删除！'
         });
 
         if (user.changed) return Q.reject({

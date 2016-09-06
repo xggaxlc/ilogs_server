@@ -38,9 +38,10 @@ module.exports = mongoose.model('Setting', SettingSchema);
 const Log = require('../log/log.model');
 
 SettingSchema.post('save', function() {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `更新了[站点设置]`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    new Log({
+      name: global.currentUser._id,
+      content: `更新了站点设置`
+    }).save();
+  }
 });

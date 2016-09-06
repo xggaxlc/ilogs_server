@@ -33,17 +33,27 @@ CategorySchema.pre('save', function(next) {
 });
 
 CategorySchema.post('save', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `创建或者更新了[分类]--${doc.name}`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    if (global.reqMethod === 'POST') {
+      new Log({
+        name: global.currentUser._id,
+        content: `创建了分类${doc.name}`
+      }).save();
+
+    } else if (global.reqMethod === 'PUT') {
+      new Log({
+        name: global.currentUser._id,
+        content: `更新了分类：${doc.name}`
+      }).save();
+    }
+  }
 });
 
 CategorySchema.post('remove', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `删除了[分类]--${doc.name}`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    new Log({
+      name: global.currentUser._id,
+      content: `删除了分类：${doc.name}`
+    }).save();
+  }
 });

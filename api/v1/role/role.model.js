@@ -118,9 +118,11 @@ RoleSchema.pre('save', function(next) {
 });
 
 RoleSchema.pre('remove', function(next) {
-  User.findOne({ role: this._id }).exec()
+  User.findOne({
+      role: this._id
+    }).exec()
     .then(entity => {
-      if (entity) return next(new ValidateError('有用户使用此用户组,无法删除')); 
+      if (entity) return next(new ValidateError('有用户使用此用户组,无法删除'));
       next();
     })
     .catch(err => {
@@ -129,28 +131,43 @@ RoleSchema.pre('remove', function(next) {
 });
 
 RoleSchema.post('save', function(doc) {
-  
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `创建或者更新了[角色]--${doc.name}`
-  });
-
-  Q.all([
-    // 记录Log
-    newLog.save(),
-    // role修改下线所有此角色的用户
-    User.update({ role: doc._id }, { $set: { changed: true } }, { multi: true })
-  ])
-  .catch(err => {
-    console.error(err);
-  });
-
+  if (global.currentUser) {
+    if (global.reqMethod === 'POST') {
+      new Log({
+        name: global.currentUser._id,
+        content: `创建了角色：${doc.name}`
+      }).save();
+    } else if (global.reqMethod === 'PUT') {
+      let newLog = new Log({
+        name: global.currentUser._id,
+        content: `更新了角色：${doc.name}`
+      });
+      Q.all([
+          // 记录Log
+          newLog.save(),
+          // role修改下线所有此角色的用户
+          User.update({
+            role: doc._id
+          }, {
+            $set: {
+              changed: true
+            }
+          }, {
+            multi: true
+          })
+        ])
+        .catch(err => {
+          console.error(err);
+        });
+    }
+  }
 });
 
 RoleSchema.post('remove', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `删除了[角色]--${doc.name}`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    new Log({
+      name: global.currentUser._id,
+      content: `删除了角色：${doc.name}`
+    }).save();
+  }
 });

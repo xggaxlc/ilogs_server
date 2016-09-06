@@ -78,11 +78,9 @@ module.exports = mongoose.model('User', UserSchema);
 const ValidateError = require('../../../components/utils.js').ValidateError;
 const Role = require('../role/role.model');
 const Log = require('../log/log.model');
-const Mailer = require('../../../components/mail');
 
 UserSchema.pre('save', function(next) {
   this.update_at = Date.now();
-
   try {
     if (this._id.toString() !== global.currentUser._id.toString()) {
       this.changed = true;
@@ -109,24 +107,25 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.post('save', function(doc) {
   if (global.currentUser) {
-    new Log({
+    if (global.reqMethod === 'POST') {
+      new Log({
         name: global.currentUser._id,
-        content: `创建或者更新了[用户]--${doc.name}--${doc.email}`
-      })
-      .save()
-      .then(() => {
-        if (!doc.retrieve_time && !doc.retrieve_key && (doc._id.toString() !== global.currentUser._id.toString)) {
-          Mailer.sendInfoChangedEmail(doc.email, global.currentUser);
-        }
-      });
+        content: `创建了用户：${doc.name}(${doc.email})`
+      }).save();
+    } else if (global.reqMethod === 'PUT') {
+      new Log({
+        name: global.currentUser._id,
+        content: `更新了用户：${doc.name}(${doc.email})`
+      }).save();
+    }
   }
-
 });
 
 UserSchema.post('remove', function(doc) {
-  let newLog = new Log({
-    name: global.currentUser._id,
-    content: `删除了[用户]--${doc.name}--${doc.email}`
-  });
-  newLog.save();
+  if (global.currentUser) {
+    new Log({
+      name: global.currentUser._id,
+      content: `删除了用户：${doc.name}(${doc.email})`
+    }).save();
+  }
 });
