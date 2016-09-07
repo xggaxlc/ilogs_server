@@ -19,7 +19,7 @@ exports.index = function(req, res) {
     req.query.published = true;
   }
 
-  let queryFormated = Respond.formatQuery(req.query, ['content'], ['title']);
+  let queryFormated = Respond.formatQuery(req.query, ['md', 'html'], ['title']);
   return Q.all(
       [
         Post.count(queryFormated.query).exec(),
