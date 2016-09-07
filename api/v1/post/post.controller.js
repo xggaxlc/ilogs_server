@@ -45,7 +45,7 @@ exports.show = function(req, res) {
 
   //未登录只能获取未发布的文章
   if (!req.currentUser) {
-    condition.puhlished = true;
+    condition.published = true;
   }
 
   return Post.findOne(condition)
