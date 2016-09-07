@@ -8,9 +8,10 @@ const Ctrl = require('./log.controller');
 const CheckLogin = require('../../../components/checkLogin');
 const mustLogin = CheckLogin.mustLogin;
 
-router.use(mustLogin);
+//检查权限
+const checkPermission = require('../../../components/checkPermission');
 
-router.get('/', Ctrl.index);
-router.get('/:id', Ctrl.show);
+router.get('/', mustLogin, checkPermission, Ctrl.index);
+router.get('/:id', mustLogin, checkPermission, Ctrl.show);
 
 module.exports = router;

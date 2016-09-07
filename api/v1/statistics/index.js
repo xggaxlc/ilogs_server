@@ -8,11 +8,12 @@ const Ctrl = require('./statistics.controller');
 const CheckLogin = require('../../../components/checkLogin');
 const mustLogin = CheckLogin.mustLogin;
 
-router.use(mustLogin);
+//检查权限
+const checkPermission = require('../../../components/checkPermission');
 
-router.get('/category', Ctrl.category);
-router.get('/user', Ctrl.user);
-router.get('/role', Ctrl.role);
-router.get('/post', Ctrl.post);
+router.get('/category', mustLogin, checkPermission, Ctrl.category);
+router.get('/user', mustLogin, checkPermission, Ctrl.user);
+router.get('/role', mustLogin, checkPermission, Ctrl.role);
+router.get('/post', mustLogin, checkPermission, Ctrl.post);
 
 module.exports = router;

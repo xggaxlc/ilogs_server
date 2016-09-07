@@ -16,7 +16,7 @@ exports.index = function(req, res) {
 
   //未登录只能获取未发布的文章
   if (!req.currentUser) {
-    req.query.puhlished = true;
+    req.query.published = true;
   }
 
   let queryFormated = Respond.formatQuery(req.query, ['content'], ['title']);

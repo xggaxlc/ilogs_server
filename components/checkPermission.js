@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
     let api = req.baseUrl.split('/').pop().toLowerCase();
     let method = req.method.toLowerCase();
     let permissions = req.currentUser.role.permissions.toObject();
-    if (permissions[api]['hasOwnProperty'](method)) {
+    if (permissions[api] && permissions[api]['hasOwnProperty'](method)) {
       permissions[api][method] ? next() : res.status(403).end();
     } else {
       //model没有这个权限字段(默认都有无需设置权限)
