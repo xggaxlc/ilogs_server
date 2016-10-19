@@ -12,10 +12,10 @@ module.exports = function(req, res, next) {
   } else {
     let api = req.baseUrl.split('/').pop().toLowerCase();
     let method = req.method.toLowerCase();
-    let permissions = new Role({}).toObject();
+    let permissions = new Role({}).toObject().permissions;
     if (permissions[api] && permissions[api]['hasOwnProperty'](method)) {
       try{
-        let userPermissions = req.currentUser.role.permissions.toObject();
+        let userPermissions = req.currentUser.toObject().role.permissions;
         userPermissions[api][method] ? next() : res.status(403).end();
       } catch(e) {
         res.status(403).end();
