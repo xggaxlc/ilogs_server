@@ -34,6 +34,7 @@
 * **POST** `/post` &&
 * **PUT** `/post` && *修改自己的文章不需要检查权限*
 * **DELETE** `/post/:id` && *删除自己的文章不需要检查权限*
+
 ---
 ## 用户
 * **GET** `/user` ||
@@ -41,6 +42,7 @@
 * **POST** `/user` &&
 * **PUT** `/user` &&  *只有MASTER用户能修改角色字段,修改自己的资料不需要验证权限, 用户被第三者修改会收到邮件提醒*
 * **DELETE** `/user/:id` &&
+
 ---
 ## 分类
 * **GET** `/category` ||
@@ -48,6 +50,7 @@
 * **POST** `/category` &&
 * **PUT** `/category` &&
 * **DELETE** `/category/:id` &&
+
 ---
 ## 角色
 * **GET** `/role` &&
@@ -55,25 +58,30 @@
 * **POST** `/role` &&
 * **PUT** `/role` && *修改角色将导致所有使用此角色的用户下线*
 * **DELETE** `/role/:id` &&
+
 ---
 ## 统计
 * **GET** `/statistics/category` &&
 * **GET** `/statistics/user` &&
 * **GET** `/statistics/role` &&
 * **GET** `/statistics/post` &&
+
 ---
 ## 日志
 
 * **GET** `/log` &&
 * **GET** `/log/:id` &&
+
 ---
 ## 上传
 * **POST** `/upload/image` &&
 * **DELETE** `/upload/:filename` &&
+
 ---
 ## 设置
 * **GET** `/setting` &&
 * **POST** `/setting` &&
+
 ---
 ## 邀请用户
 * **POST** `/invite` &&
