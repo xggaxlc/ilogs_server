@@ -59,8 +59,8 @@ https://github.com/xggaxlc/ilogs_server
 //更多配置参考pm2文档
 {
   "name": "ilogs_server", //app名字，随便改
-  "script": "app.js", 
-  "instances" : "max", 
+  "script": "app.js",
+  "instances" : "max",
   "exec_mode": "cluster",
   "env": {
     "IP": "0.0.0.0", //填写服务器IP
@@ -78,11 +78,11 @@ https://github.com/xggaxlc/ilogs_server
 
 * 手动部署(不推荐)
 1. windows下
-	1. `npm install forever -g` // [forever](https://github.com/foreverjs/forever) 
+	1. `npm install forever -g` // [forever](https://github.com/foreverjs/forever)
 	2. `set NODE_ENV=production` //默认development
 	3. `set PORT=9000` //默认用9000端口
 	4. `set IP=xxx.xxx.xxx.xxx` //设置服务器IP
-	5. `forever start app.js` 
+	5. `forever start app.js`
 2. linux下
 	1. `npm install forever -g`
 	2. `export NODE_ENV=production`

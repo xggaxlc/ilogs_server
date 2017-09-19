@@ -34,7 +34,7 @@ exports.sendInfoChangedEmail = function(email, operator) {
     `
   }
 
-  return exports.sendMail(data);  
+  return exports.sendMail(data);
 }
 
 exports.sendResetPassEmail = function(email, resetLink, resetExpire) {

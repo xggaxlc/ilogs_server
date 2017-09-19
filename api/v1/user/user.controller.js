@@ -59,7 +59,7 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   delete req.body.master;
   delete req.body.changed;
-  
+
   return Utils.checkPass(req.body.password)
     .then(hashedPass => {
       if (hashedPass) {
@@ -118,7 +118,7 @@ exports.update = function(req, res) {
     .then(entity => {
       let updatedUser = entity.toObject();
       delete updatedUser.password;
-      
+
       // 发送邮件通知信息被修改
       if (updatedUser._id.toString() !== global.currentUser._id.toString()) {
         Mailer.sendInfoChangedEmail(updatedUser.email, global.currentUser);

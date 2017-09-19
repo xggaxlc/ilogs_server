@@ -8,10 +8,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/environment');
 const path = require('path');
-const compression = require('compression');
 
 mongoose.Promise = require('q').Promise;
-mongoose.connect(config.mongo.uri, config.mongo.options);
+mongoose.connect(config.mongo.uri, Object.assign({}, config.mongo.options, { useMongoClient: true }));
 mongoose.connection.on('error', function(err) {
   console.error(`MongoDB connection error: ${err}`);
   process.exit(-1);
@@ -21,10 +20,8 @@ if (config.seedDB) {
   require('./config/seed');
 }
 
-let app = express();
-let server = http.createServer(app);
-
-app.use(compression());
+const app = express();
+const server = http.createServer(app);
 
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
